@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('messages.login') }} | {{ __('messages.app_name') }}</title>
     
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    
     <script>
         const storedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', storedTheme);

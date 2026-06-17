@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title') | {{ __('messages.app_name') }}</title>
     
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    
     <!-- Inline script to prevent theme flashing -->
     <script>
         const storedTheme = localStorage.getItem('theme') || 'light';
