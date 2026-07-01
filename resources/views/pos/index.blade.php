@@ -357,8 +357,18 @@
         .then(data => {
             if (data.success) {
                 playBeep();
-                // Add product to cart with exact weight
-                addToCart(data.product, data.scanned_weight);
+                if (data.requires_weight_modal) {
+                    // Open manual weight modal
+                    currentSelectedProduct = data.product;
+                    weightModalProductName.innerText = data.product.name;
+                    weightModalProductPrice.innerText = data.product.price.toFixed(2);
+                    manualWeightInput.value = '';
+                    weightInputModal.classList.add('active');
+                    setTimeout(() => manualWeightInput.focus(), 150);
+                } else {
+                    // Add product to cart with exact weight/quantity
+                    addToCart(data.product, data.scanned_weight);
+                }
             } else {
                 alert(data.message);
             }
@@ -400,6 +410,43 @@
                 card.style.display = 'none';
             }
         });
+    });
+
+    // Handle Enter key on product search input for instant scanning
+    productSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = productSearchInput.value.trim().toLowerCase();
+            if (!query) return;
+
+            // First check: Is it a scale barcode? (starts with '2' and has >= 10 chars)
+            if (query.length >= 10 && query.startsWith('2')) {
+                processBarcode(productSearchInput.value.trim());
+                productSearchInput.value = '';
+                productCards.forEach(card => card.style.display = 'flex');
+                return;
+            }
+
+            // Find all visible product cards
+            const visibleCards = Array.from(productCards).filter(card => card.style.display !== 'none');
+            
+            if (visibleCards.length === 1) {
+                visibleCards[0].click();
+                productSearchInput.value = '';
+                productCards.forEach(card => card.style.display = 'flex');
+            } else if (visibleCards.length > 1) {
+                // If there are multiple, check for an exact SKU or name match
+                const exactCard = visibleCards.find(card => 
+                    card.getAttribute('data-sku').toLowerCase() === query || 
+                    card.getAttribute('data-name').toLowerCase() === query
+                );
+                if (exactCard) {
+                    exactCard.click();
+                    productSearchInput.value = '';
+                    productCards.forEach(card => card.style.display = 'flex');
+                }
+            }
+        }
     });
 
     // 3. PRODUCT CLICK EVENTS

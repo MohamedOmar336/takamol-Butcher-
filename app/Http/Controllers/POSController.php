@@ -65,55 +65,93 @@ class POSController extends Controller
 
     public function scanBarcode(Request $request)
     {
-        $barcode = $request->get('barcode');
+        $barcode = trim($request->get('barcode'));
         if (!$barcode) {
             return response()->json(['success' => false, 'message' => 'No barcode provided.']);
         }
 
+        // 1. Try to parse as a scale barcode
         $parser = new TmaScaleBarcodeParser();
         $payload = $parser->parse($barcode);
 
-        if (!$payload->isValid) {
-            return response()->json([
-                'success' => false,
-                'message' => $payload->error
-            ]);
+        if ($payload->isValid) {
+            $product = Product::where('sku', $payload->sku)->first();
+            if ($product) {
+                if (!$product->is_active) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => app()->getLocale() === 'ar'
+                            ? "المنتج '{$product->name}' غير نشط حالياً."
+                            : "Product '{$product->name}' is inactive."
+                    ]);
+                }
+
+                $calculatedPrice = round($payload->weight * (float)$product->price, 2);
+                return response()->json([
+                    'success' => true,
+                    'product' => [
+                        'id' => $product->id,
+                        'sku' => $product->sku,
+                        'name' => $product->name,
+                        'price' => (float)$product->price,
+                        'pricing_type' => $product->pricing_type,
+                    ],
+                    'scanned_weight' => $payload->weight,
+                    'scanned_price' => $calculatedPrice
+                ]);
+            }
         }
 
-        // Search product by PLU/SKU
-        $product = Product::where('sku', $payload->sku)->first();
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => app()->getLocale() === 'ar'
-                    ? "المنتج ذو الكود {$payload->sku} غير موجود."
-                    : "Product with SKU {$payload->sku} not found."
-            ]);
-        }
+        // 2. If it's not a scale barcode, or the scale product wasn't found, search directly by SKU
+        $trimmedBarcode = ltrim($barcode, '0');
+        $product = Product::where('sku', $barcode)
+            ->orWhere('sku', $trimmedBarcode === '' ? '0' : $trimmedBarcode)
+            ->first();
 
-        if (!$product->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => app()->getLocale() === 'ar'
-                    ? "المنتج '{$product->name}' غير نشط حالياً."
-                    : "Product '{$product->name}' is inactive."
-            ]);
-        }
+        if ($product) {
+            if (!$product->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => app()->getLocale() === 'ar'
+                        ? "المنتج '{$product->name}' غير نشط حالياً."
+                        : "Product '{$product->name}' is inactive."
+                ]);
+            }
 
-        // Calculate total price based on database price per kg
-        $calculatedPrice = round($payload->weight * (float)$product->price, 2);
+            if ($product->pricing_type === 'piece') {
+                return response()->json([
+                    'success' => true,
+                    'product' => [
+                        'id' => $product->id,
+                        'sku' => $product->sku,
+                        'name' => $product->name,
+                        'price' => (float)$product->price,
+                        'pricing_type' => $product->pricing_type,
+                    ],
+                    'scanned_weight' => 1.000,
+                    'scanned_price' => (float)$product->price
+                ]);
+            } else {
+                // Weighed product scanned via standard barcode: needs manual weight entry
+                return response()->json([
+                    'success' => true,
+                    'requires_weight_modal' => true,
+                    'product' => [
+                        'id' => $product->id,
+                        'sku' => $product->sku,
+                        'name' => $product->name,
+                        'price' => (float)$product->price,
+                        'pricing_type' => $product->pricing_type,
+                    ]
+                ]);
+            }
+        }
 
         return response()->json([
-            'success' => true,
-            'product' => [
-                'id' => $product->id,
-                'sku' => $product->sku,
-                'name' => $product->name,
-                'price' => (float)$product->price,
-                'pricing_type' => $product->pricing_type,
-            ],
-            'scanned_weight' => $payload->weight,
-            'scanned_price' => $calculatedPrice
+            'success' => false,
+            'message' => app()->getLocale() === 'ar'
+                ? "المنتج ذو الكود {$barcode} غير موجود."
+                : "Product with barcode/SKU {$barcode} not found."
         ]);
     }
 
