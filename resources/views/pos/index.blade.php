@@ -480,6 +480,15 @@
             };
 
             if (product.pricing_type === 'weight') {
+                const searchQuery = productSearchInput.value.trim();
+                // Check if search input contains a scale barcode matching this product's PLU prefix
+                if (searchQuery.length >= 10 && searchQuery.startsWith('2')) {
+                    processBarcode(searchQuery);
+                    productSearchInput.value = '';
+                    productCards.forEach(c => c.style.display = 'flex');
+                    return;
+                }
+
                 // Weighed items require entering the weight
                 currentSelectedProduct = product;
                 weightModalProductName.innerText = product.name;
