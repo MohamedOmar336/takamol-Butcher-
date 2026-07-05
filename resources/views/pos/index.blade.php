@@ -401,10 +401,28 @@
     // 2. SEARCH PRODUCTS BY INPUT
     productSearchInput.addEventListener('input', () => {
         const query = productSearchInput.value.trim().toLowerCase();
+        
+        let searchSku = query;
+        // If it looks like a scale barcode (starts with 2, all digits, length >= 7)
+        if (query.startsWith('2') && /^\d+$/.test(query) && query.length >= 7) {
+            // Extract the 6-digit PLU (index 1 to 6)
+            searchSku = query.substring(1, 7);
+        }
+
         productCards.forEach(card => {
             const name = card.getAttribute('data-name').toLowerCase();
             const sku = card.getAttribute('data-sku').toLowerCase();
-            if (name.includes(query) || sku.includes(query)) {
+            
+            // Normalize leading zeros for SKU comparison
+            const trimmedSku = sku.replace(/^0+/, '');
+            const trimmedSearchSku = searchSku.replace(/^0+/, '');
+            
+            const isMatch = name.includes(query) || 
+                            sku.includes(query) || 
+                            sku.includes(searchSku) || 
+                            (trimmedSearchSku !== '' && (trimmedSku === trimmedSearchSku || sku.startsWith('2' + searchSku)));
+
+            if (isMatch) {
                 card.style.display = 'flex';
             } else {
                 card.style.display = 'none';
