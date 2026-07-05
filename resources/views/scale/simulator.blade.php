@@ -109,15 +109,15 @@
         const total = Math.round((weight * price + Number.EPSILON) * 100) / 100;
 
         // 2. Generate EAN-13 Barcode
-        // TM-A scale format: '2' (prefix) + SKU(5 digits, e.g. 01113) + '5' (weight flag) + weight_in_grams(5 digits, e.g. 01503 for 1.503 kg) + checksum(1 digit)
-        // PLU SKU code should be exactly 5 digits. Pad with zeros if shorter.
-        const skuPadded = sku.padStart(5, '0');
+        // TM-A scale format: '2' (prefix) + SKU (6 digits, e.g. 000026) + weight_in_grams (5 digits, e.g. 01095 for 1.095 kg) + checksum (1 digit)
+        // PLU SKU code should be exactly 6 digits. Pad with zeros if shorter.
+        const skuPadded = sku.padStart(6, '0');
         
-        // Weight in grams. 1.503 kg = 1503 g. Pad to 5 digits, e.g., '01503'
+        // Weight in grams. 1.095 kg = 1095 g. Pad to 5 digits, e.g., '01095'
         const gramsStr = Math.round(weight * 1000).toString().padStart(5, '0');
 
-        // Let's compile the first 12 digits: E.g., '2' + '01113' + '5' + '01503' = '201113501503'
-        const code12 = '2' + skuPadded + '5' + gramsStr;
+        // Compile the first 12 digits: E.g., '2' + '000026' + '01095' = '200002601095'
+        const code12 = '2' + skuPadded + gramsStr;
 
         // Calculate EAN-13 Check Digit
         const checkDigit = calculateEan13CheckDigit(code12);

@@ -13,7 +13,7 @@ class TmaScaleBarcodeParserTest extends TestCase
         $payload = $parser->parse('2011135015034');
 
         $this->assertTrue($payload->isValid);
-        $this->assertEquals('01113', $payload->sku);
+        $this->assertEquals('011135', $payload->sku);
         $this->assertEquals(1.503, $payload->weight);
         $this->assertNull($payload->error);
     }

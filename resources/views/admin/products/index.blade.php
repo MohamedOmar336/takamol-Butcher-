@@ -68,11 +68,14 @@
         @endif
     </div>
 
-    <!-- Right panel: Add Button CTA -->
-    <div class="panel" style="margin-bottom: 0; text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
-        <button type="button" id="btnOpenAddProductModal" class="btn btn-primary" style="padding: 16px 30px; font-size: 1.05rem; width: 100%;">
+    <!-- Right panel: Actions CTA -->
+    <div class="panel" style="margin-bottom: 0; display: flex; flex-direction: column; gap: 15px; height: 100%; justify-content: center; align-items: center;">
+        <button type="button" id="btnOpenAddProductModal" class="btn btn-primary" style="padding: 14px 24px; font-size: 0.98rem; width: 100%;">
             ➕ {{ __('messages.add_product') }}
         </button>
+        <a href="{{ route('admin.products.fix_barcodes') }}" class="btn btn-secondary" style="padding: 14px 24px; font-size: 0.98rem; width: 100%; text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onclick="return confirm('{{ app()->getLocale() === 'ar' ? 'هل تريد بالفعل تحويل وتصحيح كل باركود ميزان طويل (13 رقم) في الداتابيز إلى كود PLU قصير؟' : 'Are you sure you want to clean and convert all 13-digit scale barcodes in the database to short PLU codes?' }}')">
+            🧹 {{ app()->getLocale() === 'ar' ? 'تصحيح باركود الميزان' : 'Fix Scale Barcodes' }}
+        </a>
     </div>
 </div>
 

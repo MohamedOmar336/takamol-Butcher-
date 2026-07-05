@@ -106,4 +106,32 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')->with('success', $msg);
     }
+
+    public function fixScaleBarcodes()
+    {
+        $products = Product::all();
+        $updatedCount = 0;
+
+        foreach ($products as $product) {
+            $sku = trim($product->sku);
+            
+            // Check if it is a 13-digit scale barcode starting with '2'
+            if (strlen($sku) === 13 && $sku[0] === '2') {
+                // Extract 6-digit PLU (index 1 to 6) and trim leading zeros (e.g. 2000026010951 -> 26)
+                $plu = ltrim(substr($sku, 1, 6), '0');
+                if ($plu === '') {
+                    $plu = '0';
+                }
+                
+                $product->update(['sku' => $plu]);
+                $updatedCount++;
+            }
+        }
+
+        $msg = app()->getLocale() === 'ar'
+            ? "تم تنظيف وتعديل {$updatedCount} باركود ميزان بنجاح!"
+            : "Successfully cleaned and updated {$updatedCount} scale barcodes!";
+
+        return redirect()->route('admin.products.index')->with('success', $msg);
+    }
 }

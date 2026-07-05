@@ -8,10 +8,9 @@ class TmaScaleBarcodeParser implements ScaleParserInterface
      * Parses a TM-A Scale EAN-13 barcode.
      * Expected format:
      * - Digit 1: '2' (internal variable-weight prefix)
-     * - Digits 2-6: PLU / SKU (5 digits, e.g. '01113')
-     * - Digit 7: Weight checksum / scale parameter (1 digit, e.g. '5')
-     * - Digits 8-12: Weight in grams (5 digits, e.g. '01503' = 1.503 kg)
-     * - Digit 13: EAN-13 checksum (1 digit, e.g. '4')
+     * - Digits 2-7: PLU / SKU (6 digits, e.g. '000026')
+     * - Digits 8-12: Weight in grams (5 digits, e.g. '01095' = 1.095 kg)
+     * - Digit 13: EAN-13 checksum (1 digit, e.g. '1')
      */
     public function parse(string $barcode): ScalePayload
     {
@@ -42,8 +41,8 @@ class TmaScaleBarcodeParser implements ScaleParserInterface
             );
         }
 
-        // Extract SKU/PLU (digits index 1 to 5, length 5)
-        $sku = substr($barcode, 1, 5);
+        // Extract SKU/PLU (digits index 1 to 6, length 6)
+        $sku = substr($barcode, 1, 6);
 
         // Extract Weight in grams (digits index 7 to 11, length 5)
         $weightStr = substr($barcode, 7, 5);

@@ -75,7 +75,13 @@ class POSController extends Controller
         $payload = $parser->parse($barcode);
 
         if ($payload->isValid) {
-            $product = Product::where('sku', $payload->sku)->first();
+            $trimmedSku = ltrim($payload->sku, '0');
+            $product = Product::where('sku', $payload->sku)
+                ->orWhere('sku', $trimmedSku === '' ? '0' : $trimmedSku)
+                ->orWhere('sku', str_pad($trimmedSku, 5, '0', STR_PAD_LEFT))
+                ->orWhere('sku', 'like', '2' . $payload->sku . '%')
+                ->orWhere('sku', 'like', '2' . str_pad($trimmedSku, 5, '0', STR_PAD_LEFT) . '%')
+                ->first();
             if ($product) {
                 if (!$product->is_active) {
                     return response()->json([

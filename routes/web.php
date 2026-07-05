@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         // Products Catalog & Excel Importer (requires manage_inventory)
         Route::middleware(['permission:manage_inventory'])->group(function () {
             Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
+            Route::get('/products/fix-barcodes', [ProductController::class, 'fixScaleBarcodes'])->name('admin.products.fix_barcodes');
             Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
             Route::put('/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
             Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
