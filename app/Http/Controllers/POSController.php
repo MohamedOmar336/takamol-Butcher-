@@ -76,11 +76,14 @@ class POSController extends Controller
 
         if ($payload->isValid) {
             $trimmedSku = ltrim($payload->sku, '0');
+            $trimmedBarcode = ltrim($barcode, '0');
             $product = Product::where('sku', $payload->sku)
                 ->orWhere('sku', $trimmedSku === '' ? '0' : $trimmedSku)
                 ->orWhere('sku', str_pad($trimmedSku, 5, '0', STR_PAD_LEFT))
                 ->orWhere('sku', 'like', '2' . $payload->sku . '%')
                 ->orWhere('sku', 'like', '2' . str_pad($trimmedSku, 5, '0', STR_PAD_LEFT) . '%')
+                ->orWhere('sku', $barcode)
+                ->orWhere('sku', $trimmedBarcode === '' ? '0' : $trimmedBarcode)
                 ->first();
             if ($product) {
                 if (!$product->is_active) {
