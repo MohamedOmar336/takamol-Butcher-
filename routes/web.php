@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         // Dashboard Home & Mail Report (requires view_reports)
         Route::middleware(['permission:view_reports'])->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+            Route::get('/orders', [DashboardController::class, 'ordersIndex'])->name('admin.orders.index');
             Route::post('/send-report', [DashboardController::class, 'sendDailyReportManual'])->name('admin.send_report');
         });
 

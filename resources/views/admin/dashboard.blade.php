@@ -106,7 +106,7 @@
 <div class="panel">
     <div class="panel-header">
         <h3 class="panel-title">{{ __('messages.recent_orders') }}</h3>
-        <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">
             {{ __('messages.view_all') }}
         </a>
     </div>

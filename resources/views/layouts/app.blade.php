@@ -46,6 +46,12 @@
                             <span class="nav-text">{{ __('messages.dashboard') }}</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Route::is('admin.orders.index') ? 'active' : '' }}">
+                        <a href="{{ route('admin.orders.index') }}">
+                            <span class="nav-icon">🧾</span>
+                            <span class="nav-text">{{ __('messages.orders_list') }}</span>
+                        </a>
+                    </li>
                 @endif
 
                 @if(auth()->user()->is_admin || auth()->user()->hasPermission('manage_inventory'))

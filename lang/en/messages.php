@@ -112,4 +112,19 @@ return [
     'manage_inventory_desc' => 'Manage Inventory, Catalog CRUD, and Excel Import',
     'view_reports_desc' => 'Access Admin Dashboard & Sales Analytics',
     'manage_users_desc' => 'Create/Edit Sub-Users and Security Roles',
+
+    // Orders/Invoices List
+    'orders_list' => 'Sales Invoices',
+    'all_orders' => 'All Invoices',
+    'search_orders' => 'Search invoices...',
+    'start_date' => 'Start Date',
+    'end_date' => 'End Date',
+    'all_methods' => 'All Payment Methods',
+    'filter' => 'Filter',
+    'reset' => 'Reset',
+    'view_items' => 'View Details',
+    'items' => 'Items',
+    'qty' => 'Quantity',
+    'unit_price' => 'Unit Price',
+    'view_invoice' => 'Invoice Details',
 ];

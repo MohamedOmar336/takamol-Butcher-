@@ -170,4 +170,40 @@ class DashboardController extends Controller
             );
         }
     }
+
+    public function ordersIndex(Request $request)
+    {
+        $query = Order::with(['customer', 'user', 'items.product']);
+
+        // Filter by Date
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->get('start_date'));
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->get('end_date'));
+        }
+
+        // Filter by Payment Method
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->get('payment_method'));
+        }
+
+        // Search by Invoice Number or Customer Name/Phone or Cashier
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('cashier_name', 'like', "%{$search}%")
+                  ->orWhereHas('customer', function ($cq) use ($search) {
+                      $cq->where('name', 'like', "%{$search}%")
+                         ->orWhere('phone', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Paginate recent first
+        $orders = $query->latest()->paginate(15)->withQueryString();
+
+        return view('admin.orders.index', compact('orders'));
+    }
 }
