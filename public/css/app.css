@@ -1181,12 +1181,26 @@ html[dir="rtl"] .product-card-stock {
     align-items: flex-end;
     justify-content: space-between;
     height: 200px;
-    padding-top: 20px;
-    border-bottom: 2px solid var(--border-color);
-    border-left: 2px solid var(--border-color);
+    padding-top: 25px;
     position: relative;
     padding-left: 10px;
     padding-right: 10px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 100% 40px; /* Slightly tighter grid lines */
+}
+
+[data-theme="dark"] .custom-chart {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+}
+
+/* LTR layout vertical axis */
+body:not(.rtl) .custom-chart {
+    border-left: 2px solid var(--border-color);
+}
+
+/* RTL layout vertical axis */
+body.rtl .custom-chart {
+    border-right: 2px solid var(--border-color);
 }
 
 .chart-bar-wrapper {
@@ -1196,6 +1210,16 @@ html[dir="rtl"] .product-card-stock {
     gap: 8px;
     flex-grow: 1;
     max-width: 60px;
+    height: 100%;
+}
+
+.chart-bar-container {
+    height: calc(100% - 25px); /* Leave exactly 25px for date label and gap at bottom */
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    border-bottom: 2px solid var(--border-color); /* Continuous horizontal axis */
 }
 
 .chart-bar {
@@ -1220,12 +1244,18 @@ html[dir="rtl"] .product-card-stock {
     font-weight: 700;
     margin-bottom: 4px;
     white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    opacity: 1; /* Always visible */
+    color: var(--text-color);
+    background: var(--panel-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease;
 }
 
 .chart-bar:hover .chart-bar-value {
-    opacity: 1;
+    transform: translateX(-50%) scale(1.08);
 }
 
 .chart-label {

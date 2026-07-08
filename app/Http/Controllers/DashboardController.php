@@ -34,23 +34,23 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        // Weekly sales graph data (last 7 days)
-        $weeklySales = Order::select(
-                DB::raw("DATE(created_at) as sale_date"),
-                DB::raw("SUM(total_amount) as total_amount")
-            )
-            ->where('created_at', '>=', Carbon::now()->subDays(6)->startOfDay())
-            ->groupBy('sale_date')
-            ->orderBy('sale_date')
-            ->get()
-            ->pluck('total_amount', 'sale_date')
-            ->toArray();
+        // Weekly sales graph data (last 7 days) - Grouped in PHP for timezone correctness
+        $ordersLast7Days = Order::where('created_at', '>=', Carbon::now('Africa/Cairo')->subDays(6)->startOfDay())
+            ->get();
 
         // Fill missing days with zero
         $chartData = [];
         for ($i = 6; $i >= 0; $i--) {
             $dateStr = Carbon::now('Africa/Cairo')->subDays($i)->format('Y-m-d');
-            $chartData[$dateStr] = $weeklySales[$dateStr] ?? 0.00;
+            $chartData[$dateStr] = 0.00;
+        }
+
+        // Populate sales amounts matching the date in Egypt timezone
+        foreach ($ordersLast7Days as $order) {
+            $orderDate = $order->created_at->setTimezone('Africa/Cairo')->format('Y-m-d');
+            if (isset($chartData[$orderDate])) {
+                $chartData[$orderDate] += (float)$order->total_amount;
+            }
         }
 
         return view('admin.dashboard', compact(

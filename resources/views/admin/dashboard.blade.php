@@ -62,8 +62,10 @@
                         $formattedDate = \Carbon\Carbon::parse($date)->locale(app()->getLocale())->isoFormat('ddd D/M');
                     @endphp
                     <div class="chart-bar-wrapper">
-                        <div class="chart-bar" style="height: {{ max(4, $heightPercent) }}%;">
-                            <span class="chart-bar-value">{{ floatval($amount) }} ج.م</span>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: {{ max(4, $heightPercent) }}%;">
+                                <span class="chart-bar-value">{{ floatval($amount) }} ج.م</span>
+                            </div>
                         </div>
                         <span class="chart-label">{{ $formattedDate }}</span>
                     </div>
