@@ -137,7 +137,7 @@
             </table>
         </div>
 
-        <div style="margin-top: 20px;">
+        <div class="app-pagination" style="margin-top: 20px;">
             {{ $orders->links() }}
         </div>
     </div>
