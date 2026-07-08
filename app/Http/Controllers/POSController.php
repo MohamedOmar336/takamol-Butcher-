@@ -288,4 +288,23 @@ class POSController extends Controller
         $order->load(['items.product', 'customer', 'user']);
         return view('pos.receipt', compact('order'));
     }
+
+    public function sendDailyReport()
+    {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('app:send-daily-sales-report');
+            
+            return response()->json([
+                'success' => true,
+                'message' => app()->getLocale() === 'ar' 
+                    ? 'تم إرسال التقرير اليومي للمبيعات إلى بريد المالك بنجاح.' 
+                    : 'Daily sales report sent to the owner\'s email successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => (app()->getLocale() === 'ar' ? 'حدث خطأ أثناء إرسال التقرير: ' : 'Failed to send report: ') . $e->getMessage()
+            ], 500);
+        }
+    }
 }

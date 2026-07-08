@@ -134,10 +134,15 @@
                 <span id="cartSubtotal">0.00 {{ __('messages.currency') }}</span>
             </div>
             
-            <div class="pricing-row">
-                <span>{{ __('messages.discount') }}</span>
-                <input type="number" id="discountInput" class="form-control" style="width: 100px; padding: 4px 8px; text-align: center; font-size: 0.85rem;" value="0" min="0" step="1">
-            </div>
+            @if(auth()->user()->is_admin)
+                <div class="pricing-row">
+                    <span>{{ __('messages.discount') }}</span>
+                    <input type="number" id="discountInput" class="form-control" style="width: 100px; padding: 4px 8px; text-align: center; font-size: 0.85rem;" value="0" min="0" step="1">
+                </div>
+            @else
+                <!-- Cashier cannot apply discounts -->
+                <input type="hidden" id="discountInput" value="0">
+            @endif
 
             <div class="pricing-row total">
                 <span>{{ __('messages.total') }}</span>
@@ -163,6 +168,11 @@
 
             <button type="button" id="btnCheckout" class="checkout-btn">
                 {{ __('messages.checkout') }}
+            </button>
+
+            <!-- Send Daily Report / End Shift Button for Cashier -->
+            <button type="button" id="btnEndShift" class="btn btn-secondary" style="width: 100%; margin-top: 15px; padding: 12px; font-weight: bold; border-color: var(--border-color); background-color: var(--panel-bg); color: var(--text-color); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                🔒 {{ app()->getLocale() === 'ar' ? 'إنهاء الوردية وإرسال التقرير' : 'End Shift & Send Report' }}
             </button>
         </div>
     </div>
@@ -839,6 +849,59 @@
             usbScannerInput.focus();
         });
     });
+
+    // Handle Close Cashier / End Shift & Send Report
+    const btnEndShift = document.getElementById('btnEndShift');
+    if (btnEndShift) {
+        btnEndShift.addEventListener('click', () => {
+            const confirmMsg = "{{ app()->getLocale() === 'ar' ? 'هل أنت متأكد من إنهاء الوردية وإرسال تقرير المبيعات اليومي إلى المالك؟' : 'Are you sure you want to end your shift and send the daily sales report to the owner?' }}";
+            if (!confirm(confirmMsg)) return;
+
+            btnEndShift.disabled = true;
+            btnEndShift.innerText = "{{ app()->getLocale() === 'ar' ? 'جاري إرسال التقرير...' : 'Sending report...' }}";
+
+            fetch("{{ route('pos.send_report') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    // Automatically log out the cashier
+                    const logoutForm = document.querySelector('.sidebar-footer form');
+                    if (logoutForm) {
+                        logoutForm.submit();
+                    } else {
+                        // Fallback if form not found
+                        const dummyForm = document.createElement('form');
+                        dummyForm.method = 'POST';
+                        dummyForm.action = "{{ route('logout') }}";
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken;
+                        dummyForm.appendChild(csrfInput);
+                        document.body.appendChild(dummyForm);
+                        dummyForm.submit();
+                    }
+                } else {
+                    alert(data.message || 'Failed to send report');
+                    btnEndShift.disabled = false;
+                    btnEndShift.innerText = "🔒 {{ app()->getLocale() === 'ar' ? 'إنهاء الوردية وإرسال التقرير' : 'End Shift & Send Report' }}";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("{{ app()->getLocale() === 'ar' ? 'حدث خطأ أثناء الاتصال بالسيرفر لإرسال التقرير.' : 'An error occurred while contacting the server to send the report.' }}");
+                btnEndShift.disabled = false;
+                btnEndShift.innerText = "🔒 {{ app()->getLocale() === 'ar' ? 'إنهاء الوردية وإرسال التقرير' : 'End Shift & Send Report' }}";
+            });
+        });
+    }
 
     // Autofocus scanner input on page load
     window.addEventListener('load', () => {

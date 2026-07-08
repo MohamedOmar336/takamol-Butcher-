@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pos/scan', [POSController::class, 'scanBarcode'])->name('pos.scan');
         Route::post('/pos/checkout', [POSController::class, 'checkout'])->name('pos.checkout');
         Route::get('/pos/receipt/{order}', [POSController::class, 'printReceipt'])->name('pos.receipt');
+        Route::post('/pos/send-report', [POSController::class, 'sendDailyReport'])->name('pos.send_report');
     });
 
     // Admin Panel Section
