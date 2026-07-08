@@ -13,7 +13,8 @@ class Order extends Model
         'payment_method',
         'total_amount',
         'discount_amount',
-        'cashier_name'
+        'cashier_name',
+        'status'
     ];
 
     protected $casts = [

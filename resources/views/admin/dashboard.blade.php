@@ -121,13 +121,14 @@
                     <th>{{ app()->getLocale() === 'ar' ? 'الكاشير' : 'Cashier' }}</th>
                     <th>{{ __('messages.customers') }}</th>
                     <th>{{ __('messages.payment_method') }}</th>
+                    <th>{{ __('messages.order_status') }}</th>
                     <th>{{ __('messages.date') }}</th>
                     <th style="text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ __('messages.amount') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($recentOrders as $order)
-                    <tr>
+                    <tr style="{{ $order->status === 'refunded' ? 'opacity: 0.65;' : '' }}">
                         <td class="font-bold" style="color: var(--accent-color);">
                             <!-- Clickable receipt print trigger link -->
                             <a href="{{ route('pos.receipt', $order->id) }}" target="_blank" title="Print/View Receipt">
@@ -153,6 +154,13 @@
                                 <span class="badge badge-danger">{{ __('messages.credit') }}</span>
                             @endif
                         </td>
+                        <td>
+                            @if($order->status === 'completed')
+                                <span class="badge badge-success">{{ __('messages.completed') }}</span>
+                            @else
+                                <span class="badge badge-danger" style="background-color: var(--danger-light); color: var(--danger-color);">{{ __('messages.refunded') }}</span>
+                            @endif
+                        </td>
                         <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
                         <td class="font-bold" style="text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
                             {{ floatval($order->total_amount) }} {{ __('messages.currency') }}
@@ -160,7 +168,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
                             {{ app()->getLocale() === 'ar' ? 'لا توجد فواتير صادرة اليوم بعد.' : 'No invoices issued today yet.' }}
                         </td>
                     </tr>

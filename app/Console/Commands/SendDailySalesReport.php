@@ -37,8 +37,8 @@ class SendDailySalesReport extends Command
         $today = Carbon::today('Africa/Cairo');
         $dateStr = $today->format('Y-m-d');
 
-        // Query today's orders
-        $orders = Order::whereDate('created_at', $today)->get();
+        // Query today's orders - only completed
+        $orders = Order::where('status', 'completed')->whereDate('created_at', $today)->get();
         $totalSales = $orders->sum('total_amount');
         $totalOrders = $orders->count();
         $totalDiscounts = $orders->sum('discount_amount');
@@ -51,7 +51,7 @@ class SendDailySalesReport extends Command
         // Top 5 products sold today
         $topProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_subtotal'))
             ->whereHas('order', function($query) use ($today) {
-                $query->whereDate('created_at', $today);
+                $query->where('status', 'completed')->whereDate('created_at', $today);
             })
             ->groupBy('product_id')
             ->orderBy('total_subtotal', 'desc')

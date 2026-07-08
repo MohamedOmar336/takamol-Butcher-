@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['permission:view_reports'])->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/orders', [DashboardController::class, 'ordersIndex'])->name('admin.orders.index');
+            Route::post('/orders/{order}/refund', [DashboardController::class, 'refundOrder'])->name('admin.orders.refund');
             Route::post('/send-report', [DashboardController::class, 'sendDailyReportManual'])->name('admin.send_report');
         });
 

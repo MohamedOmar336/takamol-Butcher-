@@ -66,6 +66,7 @@
                     <th>{{ app()->getLocale() === 'ar' ? 'الكاشير' : 'Cashier' }}</th>
                     <th>{{ __('messages.customers') }}</th>
                     <th>{{ __('messages.payment_method') }}</th>
+                    <th>{{ __('messages.order_status') }}</th>
                     <th>{{ __('messages.date') }}</th>
                     <th style="text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ __('messages.amount') }}</th>
                     <th style="text-align: center;">{{ __('messages.actions') }}</th>
@@ -73,7 +74,7 @@
             </thead>
             <tbody>
                 @forelse($orders as $order)
-                    <tr>
+                    <tr style="{{ $order->status === 'refunded' ? 'opacity: 0.65; background-color: rgba(0,0,0,0.02);' : '' }}">
                         <td class="font-bold" style="color: var(--accent-color);">
                             <a href="{{ route('pos.receipt', $order->id) }}" target="_blank" title="{{ __('messages.view_invoice') }}">
                                 📄 {{ $order->order_number }}
@@ -98,12 +99,19 @@
                                 <span class="badge badge-danger">{{ __('messages.credit') }}</span>
                             @endif
                         </td>
+                        <td>
+                            @if($order->status === 'completed')
+                                <span class="badge badge-success">{{ __('messages.completed') }}</span>
+                            @else
+                                <span class="badge badge-danger" style="background-color: var(--danger-light); color: var(--danger-color);">{{ __('messages.refunded') }}</span>
+                            @endif
+                        </td>
                         <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
                         <td class="font-bold" style="text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
                             {{ floatval($order->total_amount) }} {{ __('messages.currency') }}
                         </td>
                         <td style="text-align: center;">
-                            <div style="display: flex; gap: 8px; justify-content: center;">
+                            <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
                                 <button class="btn btn-secondary btn-sm btn-view-items" 
                                         style="padding: 6px 12px; font-size: 0.8rem;"
                                         data-order-no="{{ $order->order_number }}"
@@ -125,12 +133,20 @@
                                 <a href="{{ route('pos.receipt', $order->id) }}" target="_blank" class="btn btn-secondary btn-sm" style="padding: 6px 12px; font-size: 0.8rem; border-color: var(--border-color);">
                                     🖨️ {{ __('messages.print') }}
                                 </a>
+                                @if(auth()->user()->is_admin && $order->status === 'completed')
+                                    <form action="{{ route('admin.orders.refund', $order->id) }}" method="POST" style="display: inline; margin: 0;" onsubmit="return confirm('{{ __('messages.refund_confirm') }}')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm" style="padding: 6px 12px; font-size: 0.8rem; border: none; background-color: var(--danger-color); color: white;">
+                                            ↩️ {{ __('messages.refund') }}
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 40px;">
                             {{ app()->getLocale() === 'ar' ? 'لم يتم العثور على أي فواتير تطابق شروط البحث.' : 'No invoices matched the search criteria.' }}
                         </td>
                     </tr>

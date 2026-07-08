@@ -127,4 +127,9 @@ return [
     'qty' => 'Quantity',
     'unit_price' => 'Unit Price',
     'view_invoice' => 'Invoice Details',
+    'refund' => 'Refund / Cancel',
+    'refund_confirm' => 'Are you sure you want to refund this invoice? This will restore inventory stock and reverse customer debt.',
+    'refunded' => 'Refunded',
+    'completed' => 'Completed',
+    'order_status' => 'Status',
 ];

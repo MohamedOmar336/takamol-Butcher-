@@ -19,8 +19,8 @@ class DashboardController extends Controller
         $today = Carbon::today('Africa/Cairo');
 
         // Core stats
-        $totalSalesToday = Order::whereDate('created_at', $today)->sum('total_amount');
-        $totalOrdersToday = Order::whereDate('created_at', $today)->count();
+        $totalSalesToday = Order::where('status', 'completed')->whereDate('created_at', $today)->sum('total_amount');
+        $totalOrdersToday = Order::where('status', 'completed')->whereDate('created_at', $today)->count();
         
         // Weighed items stock below 5.000 kg OR pieces below 5 units
         $lowStockCount = Product::where('stock', '<', 5.000)->count();
@@ -35,7 +35,8 @@ class DashboardController extends Controller
             ->get();
 
         // Weekly sales graph data (last 7 days) - Grouped in PHP for timezone correctness
-        $ordersLast7Days = Order::where('created_at', '>=', Carbon::now('Africa/Cairo')->subDays(6)->startOfDay())
+        $ordersLast7Days = Order::where('status', 'completed')
+            ->where('created_at', '>=', Carbon::now('Africa/Cairo')->subDays(6)->startOfDay())
             ->get();
 
         // Fill missing days with zero
@@ -205,5 +206,48 @@ class DashboardController extends Controller
         $orders = $query->latest()->paginate(15)->withQueryString();
 
         return view('admin.orders.index', compact('orders'));
+    }
+
+    public function refundOrder(Order $order)
+    {
+        // 1. Authorization: Only admins can perform refunds
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // 2. Validate Order Status
+        if ($order->status !== 'completed') {
+            return redirect()->back()->with('error', 
+                app()->getLocale() === 'ar' ? 'هذه الفاتورة مرتجعة بالفعل.' : 'This invoice is already refunded.'
+            );
+        }
+
+        try {
+            DB::transaction(function () use ($order) {
+                // 3. Update Order Status
+                $order->update(['status' => 'refunded']);
+
+                // 4. Restore Inventory Stocks
+                foreach ($order->items as $item) {
+                    if ($item->product) {
+                        $item->product->increment('stock', $item->quantity);
+                    }
+                }
+
+                // 5. Adjust Customer Balance if payment was Credit (Debt)
+                if ($order->payment_method === 'credit' && $order->customer) {
+                    $order->customer->decrement('balance', $order->total_amount);
+                }
+            });
+
+            return redirect()->back()->with('success', 
+                app()->getLocale() === 'ar' ? 'تم استرجاع وإلغاء الفاتورة بنجاح وإعادة المنتجات للمخزن.' : 'Invoice refunded successfully and stocks restored.'
+            );
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 
+                (app()->getLocale() === 'ar' ? 'حدث خطأ أثناء معالجة الاسترجاع: ' : 'Failed to process refund: ') . $e->getMessage()
+            );
+        }
     }
 }
