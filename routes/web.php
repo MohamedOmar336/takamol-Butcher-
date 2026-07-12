@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/orders', [DashboardController::class, 'ordersIndex'])->name('admin.orders.index');
             Route::post('/orders/{order}/refund', [DashboardController::class, 'refundOrder'])->name('admin.orders.refund');
+            Route::get('/print-report', [DashboardController::class, 'printDailyReport'])->name('admin.print_report');
             Route::post('/send-report', [DashboardController::class, 'sendDailyReportManual'])->name('admin.send_report');
         });
 

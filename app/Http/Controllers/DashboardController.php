@@ -250,4 +250,50 @@ class DashboardController extends Controller
             );
         }
     }
+
+    public function printDailyReport()
+    {
+        $today = Carbon::today('Africa/Cairo');
+        $dateStr = $today->format('Y-m-d');
+
+        // Query today's orders - only completed
+        $orders = Order::where('status', 'completed')->whereDate('created_at', $today)->get();
+        $totalSales = $orders->sum('total_amount');
+        $totalOrders = $orders->count();
+        $totalDiscounts = $orders->sum('discount_amount');
+
+        // Payment method breakdown
+        $cashSales = $orders->where('payment_method', 'cash')->sum('total_amount');
+        $cardSales = $orders->where('payment_method', 'card')->sum('total_amount');
+        $creditSales = $orders->where('payment_method', 'credit')->sum('total_amount');
+
+        // Top 5 products sold today
+        $topProducts = \App\Models\OrderItem::select('product_id', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_subtotal'))
+            ->whereHas('order', function($query) use ($today) {
+                $query->where('status', 'completed')->whereDate('created_at', $today);
+            })
+            ->groupBy('product_id')
+            ->orderBy('total_subtotal', 'desc')
+            ->limit(5)
+            ->with('product')
+            ->get();
+
+        // Low stock warnings
+        $lowStockProducts = Product::where('stock', '<', 5.000)
+            ->orderBy('stock')
+            ->limit(15)
+            ->get();
+
+        return view('admin.reports.print_daily', compact(
+            'dateStr',
+            'totalSales',
+            'totalOrders',
+            'totalDiscounts',
+            'cashSales',
+            'cardSales',
+            'creditSales',
+            'topProducts',
+            'lowStockProducts'
+        ));
+    }
 }
