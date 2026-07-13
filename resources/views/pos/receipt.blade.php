@@ -11,11 +11,11 @@
         }
         body {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 11pt;
+            font-size: 9.5pt;
             color: #000;
             background-color: #fff;
-            padding: 10px;
-            width: 80mm;
+            padding: 4px;
+            width: 72mm;
             margin: 0 auto;
         }
         .text-center { text-align: center; }
@@ -25,95 +25,95 @@
         
         .logo {
             display: block;
-            margin: 0 auto 10px;
-            max-height: 50px;
+            margin: 0 auto 8px;
+            max-height: 45px;
             object-fit: contain;
             border-radius: 4px;
         }
         
         .title {
-            font-size: 14pt;
+            font-size: 12pt;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .subtitle {
-            font-size: 9pt;
+            font-size: 8pt;
             color: #555;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .divider {
             border-top: 1px dashed #000;
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            font-size: 8.5pt;
-            margin-bottom: 3px;
+            font-size: 8pt;
+            margin-bottom: 2px;
         }
 
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            margin: 8px 0;
         }
 
         .items-table th {
             border-bottom: 1px dashed #000;
-            padding-bottom: 5px;
-            font-size: 8.5pt;
+            padding-bottom: 4px;
+            font-size: 8pt;
         }
 
         .items-table td {
-            padding: 5px 0;
-            font-size: 9pt;
+            padding: 4px 0;
+            font-size: 8.5pt;
             vertical-align: top;
         }
 
         .item-details {
-            font-size: 7.5pt;
+            font-size: 7pt;
             color: #444;
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            font-size: 9.5pt;
-            margin-bottom: 4px;
+            font-size: 8.5pt;
+            margin-bottom: 3px;
         }
 
         .total-row.grand-total {
-            font-size: 12pt;
+            font-size: 11pt;
             font-weight: bold;
             border-top: 1px dashed #000;
-            padding-top: 6px;
-            margin-top: 6px;
+            padding-top: 5px;
+            margin-top: 5px;
         }
 
         .footer {
-            margin-top: 20px;
-            font-size: 8.5pt;
+            margin-top: 15px;
+            font-size: 8pt;
             text-align: center;
         }
 
         .qr-placeholder {
             display: flex;
             justify-content: center;
-            margin: 15px 0 10px;
+            margin: 12px 0 8px;
         }
 
         .qr-placeholder svg {
-            width: 90px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
         }
 
         @media print {
             body {
-                width: 80mm;
-                padding: 5px;
+                width: 72mm;
+                padding: 4px;
                 margin: 0;
             }
         }
