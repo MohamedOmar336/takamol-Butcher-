@@ -1177,6 +1177,7 @@ html[dir="rtl"] .product-card-stock {
 }
 
 .custom-chart {
+    direction: ltr !important;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
@@ -1187,20 +1188,11 @@ html[dir="rtl"] .product-card-stock {
     padding-right: 10px;
     background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
     background-size: 100% 40px; /* Slightly tighter grid lines */
+    border-left: 2px solid var(--border-color);
 }
 
 [data-theme="dark"] .custom-chart {
     background-image: linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-}
-
-/* LTR layout vertical axis */
-body:not(.rtl) .custom-chart {
-    border-left: 2px solid var(--border-color);
-}
-
-/* RTL layout vertical axis */
-body.rtl .custom-chart {
-    border-right: 2px solid var(--border-color);
 }
 
 .chart-bar-wrapper {

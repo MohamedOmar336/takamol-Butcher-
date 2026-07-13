@@ -132,4 +132,5 @@ return [
     'refunded' => 'Refunded',
     'completed' => 'Completed',
     'order_status' => 'Status',
+    'print_report_now' => 'Print Daily Report (A4)',
 ];

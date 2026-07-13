@@ -296,4 +296,118 @@ class DashboardController extends Controller
             'lowStockProducts'
         ));
     }
+
+    public function sendRangeReportManual(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
+        ]);
+
+        try {
+            $start = Carbon::parse($request->get('start_date'), 'Africa/Cairo')->startOfDay();
+            $end = Carbon::parse($request->get('end_date'), 'Africa/Cairo')->endOfDay();
+
+            // Query orders in range
+            $orders = Order::where('status', 'completed')
+                ->whereBetween('created_at', [$start, $end])
+                ->get();
+
+            $topProducts = \App\Models\OrderItem::select('product_id', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_subtotal'))
+                ->whereHas('order', function($query) use ($start, $end) {
+                    $query->where('status', 'completed')
+                          ->whereBetween('created_at', [$start, $end]);
+                })
+                ->groupBy('product_id')
+                ->orderBy('total_subtotal', 'desc')
+                ->limit(5)
+                ->with('product')
+                ->get();
+
+            $stats = [
+                'start_date' => $start->format('Y-m-d'),
+                'end_date' => $end->format('Y-m-d'),
+                'total_sales' => $orders->sum('total_amount'),
+                'total_orders' => $orders->count(),
+                'total_discounts' => $orders->sum('discount_amount'),
+                'cash_sales' => $orders->where('payment_method', 'cash')->sum('total_amount'),
+                'card_sales' => $orders->where('payment_method', 'card')->sum('total_amount'),
+                'credit_sales' => $orders->where('payment_method', 'credit')->sum('total_amount'),
+                'top_products' => $topProducts->map(function($item) {
+                    return [
+                        'name_ar' => $item->product ? $item->product->name_ar : 'صنف محذوف',
+                        'name_en' => $item->product ? $item->product->name_en : 'Deleted Product',
+                        'sku' => $item->product ? $item->product->sku : '-',
+                        'qty' => $item->total_qty,
+                        'type' => $item->product ? $item->product->pricing_type : 'piece',
+                        'total' => $item->total_subtotal
+                    ];
+                })->toArray()
+            ];
+
+            $ownerEmail = env('OWNER_EMAIL', 'owner@example.com');
+            \Illuminate\Support\Facades\Mail::to($ownerEmail)->send(new \App\Mail\RangeSalesReportMail($stats));
+
+            return redirect()->back()->with('success', 
+                app()->getLocale() === 'ar' ? 'تم إرسال تقرير الفترة للمالك بنجاح.' : 'Period sales report sent to owner successfully.'
+            );
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 
+                (app()->getLocale() === 'ar' ? 'حدث خطأ أثناء معالجة وإرسال التقرير: ' : 'Failed to send report: ') . $e->getMessage()
+            );
+        }
+    }
+
+    public function printRangeReport(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
+        ]);
+
+        $start = Carbon::parse($request->get('start_date'), 'Africa/Cairo')->startOfDay();
+        $end = Carbon::parse($request->get('end_date'), 'Africa/Cairo')->endOfDay();
+
+        $startStr = $start->format('Y-m-d');
+        $endStr = $end->format('Y-m-d');
+
+        // Query orders in range
+        $orders = Order::where('status', 'completed')
+            ->whereBetween('created_at', [$start, $end])
+            ->get();
+
+        $totalSales = $orders->sum('total_amount');
+        $totalOrders = $orders->count();
+        $totalDiscounts = $orders->sum('discount_amount');
+
+        // Payment breakdown
+        $cashSales = $orders->where('payment_method', 'cash')->sum('total_amount');
+        $cardSales = $orders->where('payment_method', 'card')->sum('total_amount');
+        $creditSales = $orders->where('payment_method', 'credit')->sum('total_amount');
+
+        // Top 5 products
+        $topProducts = \App\Models\OrderItem::select('product_id', DB::raw('SUM(quantity) as total_qty'), DB::raw('SUM(subtotal) as total_subtotal'))
+            ->whereHas('order', function($query) use ($start, $end) {
+                $query->where('status', 'completed')
+                      ->whereBetween('created_at', [$start, $end]);
+            })
+            ->groupBy('product_id')
+            ->orderBy('total_subtotal', 'desc')
+            ->limit(5)
+            ->with('product')
+            ->get();
+
+        return view('admin.reports.print_range', compact(
+            'startStr',
+            'endStr',
+            'totalSales',
+            'totalOrders',
+            'totalDiscounts',
+            'cashSales',
+            'cardSales',
+            'creditSales',
+            'topProducts'
+        ));
+    }
 }

@@ -132,4 +132,5 @@ return [
     'refunded' => 'مرتجعة',
     'completed' => 'مكتملة',
     'order_status' => 'الحالة',
+    'print_report_now' => 'طباعة تقرير اليوم (A4)',
 ];
