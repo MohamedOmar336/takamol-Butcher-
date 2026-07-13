@@ -168,11 +168,6 @@
                     </button>
                 </form>
 
-                <!-- Print Daily Report A4 Button -->
-                <a href="{{ route('admin.print_report') }}" target="_blank" class="btn btn-secondary" style="padding: 15px; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; border-color: var(--border-color); background-color: var(--panel-bg); color: var(--text-color); text-decoration: none;">
-                    🖨️ {{ __('messages.print_report_now') ?? (app()->getLocale() === 'ar' ? 'طباعة تقرير اليوم (A4)' : 'Print Daily Report (A4)') }}
-                </a>
-
                 <!-- Access POS Button -->
                 @if(auth()->user()->is_admin || auth()->user()->hasPermission('access_pos'))
                     <a href="{{ route('pos.index') }}" class="btn btn-success" style="padding: 15px; font-size: 0.95rem;">
