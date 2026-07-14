@@ -7,6 +7,28 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ScaleSimulatorController;
+use App\Http\Controllers\SuperAdminController;
+
+// Central Domain Routing (Landing & Super Admin Panel)
+$centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost';
+
+Route::domain($centralDomain)->group(function () {
+    Route::get('/', [SuperAdminController::class, 'showLanding'])->name('central.landing');
+    Route::post('/redirect-store', [SuperAdminController::class, 'redirectStore'])->name('central.redirect_store');
+
+    Route::prefix('super-admin')->group(function () {
+        Route::get('/login', [SuperAdminController::class, 'showLogin'])->name('super_admin.login');
+        Route::post('/login', [SuperAdminController::class, 'login']);
+        Route::post('/logout', [SuperAdminController::class, 'logout'])->name('super_admin.logout');
+
+        // Central Super Admin authenticated routes
+        Route::middleware(['auth', \App\Http\Middleware\CheckSuperAdmin::class])->group(function () {
+            Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('super_admin.dashboard');
+            Route::post('/tenants', [SuperAdminController::class, 'storeTenant'])->name('super_admin.tenants.store');
+            Route::post('/tenants/{tenant}/toggle-status', [SuperAdminController::class, 'toggleTenantStatus'])->name('super_admin.tenants.toggle');
+        });
+    });
+});
 
 // 1. Language switcher (accessible to everyone)
 Route::get('/change-language/{locale}', [AuthController::class, 'changeLanguage'])->name('change_language');

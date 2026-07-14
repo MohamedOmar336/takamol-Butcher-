@@ -253,7 +253,7 @@
         <div class="report-header">
             <div class="report-title-container">
                 <h1>{{ app()->getLocale() === 'ar' ? 'تقرير تحليل مبيعات الفترة' : 'Period Sales Analysis' }}</h1>
-                <p>{{ app()->getLocale() === 'ar' ? 'ملحمة التكامل لتقطيع وتصنيف اللحوم' : 'Al-Takamul Butcher' }}</p>
+                <p>{{ $activeTenant->name ?? (app()->getLocale() === 'ar' ? 'دكان' : 'Dukkan') }}</p>
             </div>
             
             <div class="report-meta">

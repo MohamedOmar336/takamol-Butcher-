@@ -33,7 +33,7 @@
         <!-- Scanners and search bars -->
         <div class="pos-scan-bar">
             <div class="form-group" style="margin-bottom: 0; position: relative;">
-                <input type="text" id="usbScannerInput" class="form-control" placeholder="{{ __('messages.scan_scale_code') }}" autocomplete="off" autofocus>
+                <input type="text" id="usbScannerInput" class="form-control" placeholder="{{ (isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket'])) ? __('messages.scan_scale_code') : (app()->getLocale() === 'ar' ? 'امسح الباركود (أو اكتبه هنا)...' : 'Scan barcode (or type here)...') }}" autocomplete="off" autofocus>
                 <span style="position: absolute; left: 15px; top: 12px; font-size: 1.1rem; pointer-events: none;">🏷️</span>
             </div>
             <div class="form-group" style="margin-bottom: 0; position: relative;">
@@ -76,9 +76,11 @@
                     </div>
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
                         <span class="product-badge-type">
                             {{ $product->pricing_type === 'weight' ? __('messages.pricing_by_weight') : __('messages.pricing_by_piece') }}
                         </span>
+                        @endif
                         <span class="product-card-price">
                             {{ floatval($product->price) }} <span class="product-card-unit">{{ __('messages.currency') }}</span>
                         </span>

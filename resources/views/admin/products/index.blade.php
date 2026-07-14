@@ -43,6 +43,7 @@
             </a>
         </div>
 
+        @if(isset($activeTenant) && $activeTenant->store_type === 'butcher')
         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding-top: 8px; margin-top: 8px; border-top: 1px dashed var(--border-color);">
             <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
                 {{ app()->getLocale() === 'ar' ? 'تحميل شيت أسعار "التكامل" المعبأ بالكامل:' : 'Download filled "Takamul" sheet:' }}
@@ -54,6 +55,7 @@
                 📄 Takamul CSV (.csv)
             </a>
         </div>
+        @endif
 
         <!-- Excel row errors display -->
         @if(session('import_errors'))
@@ -73,9 +75,11 @@
         <button type="button" id="btnOpenAddProductModal" class="btn btn-primary" style="padding: 14px 24px; font-size: 0.98rem; width: 100%;">
             ➕ {{ __('messages.add_product') }}
         </button>
+        @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
         <a href="{{ route('admin.products.fix_barcodes') }}" class="btn btn-secondary" style="padding: 14px 24px; font-size: 0.98rem; width: 100%; text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" onclick="return confirm('{{ app()->getLocale() === 'ar' ? 'هل تريد بالفعل تحويل وتصحيح كل باركود ميزان طويل (13 رقم) في الداتابيز إلى كود PLU قصير؟' : 'Are you sure you want to clean and convert all 13-digit scale barcodes in the database to short PLU codes?' }}')">
             🧹 {{ app()->getLocale() === 'ar' ? 'تصحيح باركود الميزان' : 'Fix Scale Barcodes' }}
         </a>
+        @endif
     </div>
 </div>
 
@@ -121,7 +125,9 @@
                     <th>{{ app()->getLocale() === 'ar' ? 'الاسم (عربي / انجليزي)' : 'Name (AR / EN)' }}</th>
                     <th>{{ app()->getLocale() === 'ar' ? 'القسم' : 'Category' }}</th>
                     <th>{{ __('messages.price_unit') }}</th>
+                    @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
                     <th>{{ __('messages.pricing_type') }}</th>
+                    @endif
                     <th>{{ __('messages.stock_qty') }}</th>
                     <th>{{ __('messages.status') }}</th>
                     <th style="text-align: center;">{{ __('messages.actions') }}</th>
@@ -141,9 +147,11 @@
                             </span>
                         </td>
                         <td class="font-bold">{{ floatval($prod->price) }} ج.م</td>
+                        @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
                         <td>
                             {{ $prod->pricing_type === 'weight' ? __('messages.pricing_by_weight') : __('messages.pricing_by_piece') }}
                         </td>
+                        @endif
                         <td class="font-bold {{ $prod->stock < 5 ? 'text-danger' : '' }}" style="color: {{ $prod->stock < 5 ? 'var(--danger-color)' : 'inherit' }}">
                             {{ floatval($prod->stock) }} {{ $prod->pricing_type === 'weight' ? __('messages.kg') : __('messages.piece') }}
                         </td>
@@ -181,7 +189,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                        <td colspan="{{ (isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket'])) ? 8 : 7 }}" style="text-align: center; color: var(--text-muted); padding: 30px;">
                             {{ app()->getLocale() === 'ar' ? 'لا توجد منتجات مطابقة للبحث.' : 'No products found.' }}
                         </td>
                     </tr>
@@ -218,6 +226,7 @@
                 </div>
 
                 <div class="form-row">
+                    @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
                     <div class="form-group">
                         <label class="form-label">{{ __('messages.pricing_type') }} *</label>
                         <select name="pricing_type" class="form-control" required>
@@ -225,6 +234,9 @@
                             <option value="piece">{{ __('messages.pricing_by_piece') }}</option>
                         </select>
                     </div>
+                    @else
+                    <input type="hidden" name="pricing_type" value="piece">
+                    @endif
                     <div class="form-group">
                         <label class="form-label">{{ __('messages.stock_qty') }} *</label>
                         <input type="number" name="stock" class="form-control" step="0.001" min="0" required>
@@ -286,6 +298,7 @@
                 </div>
 
                 <div class="form-row">
+                    @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
                     <div class="form-group">
                         <label class="form-label">{{ __('messages.pricing_type') }} *</label>
                         <select name="pricing_type" id="edit_pricing_type" class="form-control" required>
@@ -293,6 +306,9 @@
                             <option value="piece">{{ __('messages.pricing_by_piece') }}</option>
                         </select>
                     </div>
+                    @else
+                    <input type="hidden" name="pricing_type" id="edit_pricing_type" value="piece">
+                    @endif
                     <div class="form-group">
                         <label class="form-label">{{ __('messages.stock_qty') }} *</label>
                         <input type="number" name="stock" id="edit_stock" class="form-control" step="0.001" min="0" required>

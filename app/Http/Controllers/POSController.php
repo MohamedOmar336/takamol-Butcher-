@@ -70,44 +70,49 @@ class POSController extends Controller
             return response()->json(['success' => false, 'message' => 'No barcode provided.']);
         }
 
-        // 1. Try to parse as a scale barcode
-        $parser = new TmaScaleBarcodeParser();
-        $payload = $parser->parse($barcode);
+        // 1. Try to parse as a scale barcode (Only for butcher and supermarket)
+        $activeTenant = view()->shared('activeTenant');
+        $isWeightScaleActive = $activeTenant && in_array($activeTenant->store_type, ['butcher', 'supermarket']);
 
-        if ($payload->isValid) {
-            $trimmedSku = ltrim($payload->sku, '0');
-            $trimmedBarcode = ltrim($barcode, '0');
-            $product = Product::where('sku', $payload->sku)
-                ->orWhere('sku', $trimmedSku === '' ? '0' : $trimmedSku)
-                ->orWhere('sku', str_pad($trimmedSku, 5, '0', STR_PAD_LEFT))
-                ->orWhere('sku', 'like', '2' . $payload->sku . '%')
-                ->orWhere('sku', 'like', '2' . str_pad($trimmedSku, 5, '0', STR_PAD_LEFT) . '%')
-                ->orWhere('sku', $barcode)
-                ->orWhere('sku', $trimmedBarcode === '' ? '0' : $trimmedBarcode)
-                ->first();
-            if ($product) {
-                if (!$product->is_active) {
+        if ($isWeightScaleActive) {
+            $parser = new TmaScaleBarcodeParser();
+            $payload = $parser->parse($barcode);
+
+            if ($payload->isValid) {
+                $trimmedSku = ltrim($payload->sku, '0');
+                $trimmedBarcode = ltrim($barcode, '0');
+                $product = Product::where('sku', $payload->sku)
+                    ->orWhere('sku', $trimmedSku === '' ? '0' : $trimmedSku)
+                    ->orWhere('sku', str_pad($trimmedSku, 5, '0', STR_PAD_LEFT))
+                    ->orWhere('sku', 'like', '2' . $payload->sku . '%')
+                    ->orWhere('sku', 'like', '2' . str_pad($trimmedSku, 5, '0', STR_PAD_LEFT) . '%')
+                    ->orWhere('sku', $barcode)
+                    ->orWhere('sku', $trimmedBarcode === '' ? '0' : $trimmedBarcode)
+                    ->first();
+                if ($product) {
+                    if (!$product->is_active) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => app()->getLocale() === 'ar'
+                                ? "المنتج '{$product->name}' غير نشط حالياً."
+                                : "Product '{$product->name}' is inactive."
+                        ]);
+                    }
+
+                    $calculatedPrice = round($payload->weight * (float)$product->price, 2);
                     return response()->json([
-                        'success' => false,
-                        'message' => app()->getLocale() === 'ar'
-                            ? "المنتج '{$product->name}' غير نشط حالياً."
-                            : "Product '{$product->name}' is inactive."
+                        'success' => true,
+                        'product' => [
+                            'id' => $product->id,
+                            'sku' => $product->sku,
+                            'name' => $product->name,
+                            'price' => (float)$product->price,
+                            'pricing_type' => $product->pricing_type,
+                        ],
+                        'scanned_weight' => $payload->weight,
+                        'scanned_price' => $calculatedPrice
                     ]);
                 }
-
-                $calculatedPrice = round($payload->weight * (float)$product->price, 2);
-                return response()->json([
-                    'success' => true,
-                    'product' => [
-                        'id' => $product->id,
-                        'sku' => $product->sku,
-                        'name' => $product->name,
-                        'price' => (float)$product->price,
-                        'pricing_type' => $product->pricing_type,
-                    ],
-                    'scanned_weight' => $payload->weight,
-                    'scanned_price' => $calculatedPrice
-                ]);
             }
         }
 
@@ -243,8 +248,9 @@ class POSController extends Controller
                     $customer->update(['balance' => $newBalance]);
                 }
 
-                // 3. Create Order record
-                $orderNumber = 'BTCH-' . date('YmdHis') . '-' . rand(100, 999);
+                // 3. Create Order record with tenant prefix
+                $prefix = $activeTenant ? strtoupper(substr($activeTenant->slug, 0, 4)) : 'DKN';
+                $orderNumber = $prefix . '-' . date('YmdHis') . '-' . rand(100, 999);
                 $order = Order::create([
                     'order_number' => $orderNumber,
                     'customer_id' => $customerId,

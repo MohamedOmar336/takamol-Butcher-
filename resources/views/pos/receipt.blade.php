@@ -126,8 +126,8 @@
 
     <!-- Brand Header -->
     <div class="text-center">
-        <h2 class="title">{{ __('messages.app_name') }}</h2>
-        <p class="subtitle">{{ app()->getLocale() === 'ar' ? 'شركة المواد الغذائية المحدودة' : 'Foodstuffs Co. Ltd.' }}</p>
+        <h2 class="title">{{ $activeTenant->name ?? __('messages.app_name') }}</h2>
+        <p class="subtitle">{{ app()->getLocale() === 'ar' ? 'نقطة بيع ذكية' : 'Smart POS Terminal' }}</p>
     </div>
 
     <div class="divider"></div>
@@ -277,7 +277,7 @@
     <!-- Thank you note -->
     <div class="footer">
         <p>{{ app()->getLocale() === 'ar' ? 'شكراً لزيارتكم!' : 'Thank you for your visit!' }}</p>
-        <p style="margin-top: 5px; font-size: 7.5pt; color: #555;">Takamul Systems POS</p>
+        <p style="margin-top: 5px; font-size: 7.5pt; color: #555;">{{ $activeTenant->name ?? 'Dukkan' }} POS</p>
     </div>
 
     <!-- Trigger print dialog automatically -->

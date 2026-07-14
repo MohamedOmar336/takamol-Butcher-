@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') | {{ $activeTenant->name ?? __('messages.app_name') }}</title>
+    <title>@yield('title') | {{ app()->getLocale() === 'ar' ? 'المدير العام دكان' : 'Dukkan Super Admin' }}</title>
     
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
@@ -25,80 +25,33 @@
         <!-- Sidebar Navigation -->
         <aside class="app-sidebar">
             <div class="brand" style="position: relative; width: 100%;">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
-                <span class="brand-name">{{ $activeTenant->name ?? __('messages.app_name') }}</span>
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" onerror="this.src='https://placehold.co/40x40/0d9488/fff?text=D'">
+                <span class="brand-name">{{ app()->getLocale() === 'ar' ? 'المدير العام' : 'Super Admin' }}</span>
                 <!-- Mobile close button -->
                 <button id="sidebarClose" class="mobile-close-btn" style="display: none; position: absolute; top: -5px; left: -5px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-secondary);" title="Close Sidebar">✕</button>
             </div>
 
             <ul class="sidebar-nav">
-                @if(auth()->user()->is_admin || auth()->user()->hasPermission('access_pos'))
-                    <li class="nav-item {{ Route::is('pos.index') ? 'active' : '' }}">
-                        <a href="{{ route('pos.index') }}">
-                            <span class="nav-icon">🛒</span>
-                            <span class="nav-text">{{ __('messages.pos') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @if(auth()->user()->is_admin || auth()->user()->hasPermission('view_reports'))
-                    <li class="nav-item {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                        <a href="{{ route('admin.dashboard') }}">
-                            <span class="nav-icon">📊</span>
-                            <span class="nav-text">{{ __('messages.dashboard') }}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item {{ Route::is('admin.orders.index') ? 'active' : '' }}">
-                        <a href="{{ route('admin.orders.index') }}">
-                            <span class="nav-icon">🧾</span>
-                            <span class="nav-text">{{ __('messages.orders_list') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @if(auth()->user()->is_admin || auth()->user()->hasPermission('manage_inventory'))
-                    <li class="nav-item {{ Route::is('admin.products.index') ? 'active' : '' }}">
-                        <a href="{{ route('admin.products.index') }}">
-                            <span class="nav-icon">🥩</span>
-                            <span class="nav-text">{{ __('messages.products') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @if(auth()->user()->is_admin || auth()->user()->hasPermission('access_pos'))
-                    <li class="nav-item {{ Route::is('admin.customers.index') || Route::is('admin.customers.show') ? 'active' : '' }}">
-                        <a href="{{ route('admin.customers.index') }}">
-                            <span class="nav-icon">👥</span>
-                            <span class="nav-text">{{ __('messages.customers') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @if(auth()->user()->is_admin || auth()->user()->hasPermission('manage_users'))
-                    <li class="nav-item {{ Route::is('admin.users') ? 'active' : '' }}">
-                        <a href="{{ route('admin.users') }}">
-                            <span class="nav-icon">🔑</span>
-                            <span class="nav-text">{{ __('messages.users') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @if(isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket']))
-                <li class="nav-item {{ Route::is('scale.simulator') ? 'active' : '' }}">
-                    <a href="{{ route('scale.simulator') }}">
-                        <span class="nav-icon">⚖️</span>
-                        <span class="nav-text">{{ __('messages.scale_simulator') }}</span>
+                <li class="nav-item {{ Route::is('super_admin.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('super_admin.dashboard') }}">
+                        <span class="nav-icon">🏢</span>
+                        <span class="nav-text">{{ app()->getLocale() === 'ar' ? 'إدارة المتاجر' : 'Manage Stores' }}</span>
                     </a>
                 </li>
-                @endif
+                <li class="nav-item">
+                    <a href="{{ route('central.landing') }}" target="_blank">
+                        <span class="nav-icon">🌐</span>
+                        <span class="nav-text">{{ app()->getLocale() === 'ar' ? 'الرئيسية العامة' : 'Central Landing' }}</span>
+                    </a>
+                </li>
             </ul>
 
             <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST">
+                <form action="{{ route('super_admin.logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-btn">
                         <span class="logout-icon">🚪</span>
-                        <span class="logout-text">{{ __('messages.logout') }}</span>
+                        <span class="logout-text">{{ app()->getLocale() === 'ar' ? 'تسجيل الخروج' : 'Logout' }}</span>
                     </button>
                 </form>
             </div>
@@ -135,7 +88,7 @@
                         <div class="user-info-text">
                             <div class="user-name">{{ auth()->user()->name }}</div>
                             <div class="user-role">
-                                {{ auth()->user()->is_admin ? __('messages.is_super_admin') : '' }}
+                                {{ app()->getLocale() === 'ar' ? 'المدير العام للمنصة' : 'Platform Owner' }}
                             </div>
                         </div>
                     </div>

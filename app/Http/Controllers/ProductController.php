@@ -33,6 +33,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $activeTenant = view()->shared('activeTenant');
+        $isWeightScaleActive = $activeTenant && in_array($activeTenant->store_type, ['butcher', 'supermarket']);
+
+        if (!$isWeightScaleActive) {
+            $request->merge(['pricing_type' => 'piece']);
+        }
+
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'sku' => 'required|string|unique:products,sku|max:50',
@@ -55,6 +62,13 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $activeTenant = view()->shared('activeTenant');
+        $isWeightScaleActive = $activeTenant && in_array($activeTenant->store_type, ['butcher', 'supermarket']);
+
+        if (!$isWeightScaleActive) {
+            $request->merge(['pricing_type' => 'piece']);
+        }
+
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'sku' => 'required|string|unique:products,sku,' . $product->id . '|max:50',
@@ -109,6 +123,13 @@ class ProductController extends Controller
 
     public function fixScaleBarcodes()
     {
+        $activeTenant = view()->shared('activeTenant');
+        $isWeightScaleActive = $activeTenant && in_array($activeTenant->store_type, ['butcher', 'supermarket']);
+
+        if (!$isWeightScaleActive) {
+            return redirect()->route('admin.products.index')->with('error', 'This feature is only available for stores with weight scale presets / هذه الميزة متاحة فقط للمتاجر التي تدعم الموازين.');
+        }
+
         $products = Product::all();
         $updatedCount = 0;
 
