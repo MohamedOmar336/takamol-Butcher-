@@ -24,9 +24,11 @@
     <div class="app-layout">
         <!-- Sidebar Navigation -->
         <aside class="app-sidebar">
-            <div class="brand">
+            <div class="brand" style="position: relative; width: 100%;">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
                 <span class="brand-name">{{ __('messages.app_name') }}</span>
+                <!-- Mobile close button -->
+                <button id="sidebarClose" class="mobile-close-btn" style="display: none; position: absolute; top: -5px; left: -5px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-secondary);" title="Close Sidebar">✕</button>
             </div>
 
             <ul class="sidebar-nav">
@@ -100,12 +102,19 @@
             </div>
         </aside>
 
+        <!-- Sidebar Overlay Backdrop (Mobile only) -->
+        <div id="sidebarBackdrop" class="sidebar-backdrop" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;"></div>
+
         <!-- Main Content Area -->
         <div class="app-content">
             <!-- Header -->
             <header class="app-header">
-                <div class="header-left">
-                    <h1 class="header-title">@yield('header_title')</h1>
+                <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
+                    <!-- Hamburger Menu Toggle Button (Mobile only) -->
+                    <button id="sidebarToggle" class="mobile-toggle-btn" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-primary); padding: 0;" title="Toggle Sidebar">
+                        ☰
+                    </button>
+                    <h1 class="header-title" style="margin: 0;">@yield('header_title')</h1>
                 </div>
 
                 <div class="header-actions">
@@ -150,7 +159,7 @@
         </div>
     </div>
 
-    <!-- Theme Switcher JavaScript logic -->
+    <!-- Theme Switcher & Sidebar JavaScript logic -->
     <script>
         const themeBtn = document.getElementById('themeToggle');
         themeBtn.addEventListener('click', () => {
@@ -159,6 +168,47 @@
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         });
+
+        // Sidebar Toggle JavaScript logic for Mobile Responsive
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const sidebar = document.querySelector('.app-sidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        
+        function openSidebar() {
+            if (sidebar) sidebar.classList.add('active');
+            if (backdrop) {
+                backdrop.style.display = 'block';
+                setTimeout(() => backdrop.classList.add('active'), 10);
+            }
+        }
+        
+        function closeSidebar() {
+            if (sidebar) sidebar.classList.remove('active');
+            if (backdrop) {
+                backdrop.classList.remove('active');
+                setTimeout(() => {
+                    if (!backdrop.classList.contains('active')) {
+                        backdrop.style.display = 'none';
+                    }
+                }, 300);
+            }
+        }
+        
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openSidebar();
+            });
+        }
+        
+        if (sidebarClose) {
+            sidebarClose.addEventListener('click', closeSidebar);
+        }
+        
+        if (backdrop) {
+            backdrop.addEventListener('click', closeSidebar);
+        }
     </script>
     @yield('scripts')
 </body>

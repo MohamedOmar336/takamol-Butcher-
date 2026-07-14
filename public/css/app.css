@@ -589,10 +589,9 @@ html[dir="ltr"] .stat-card::before { left: 0; }
     color: #ffffff;
 }
 
-/* POS Products grid */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 15px;
 }
 
@@ -1344,5 +1343,135 @@ html[dir="rtl"] .product-card-stock {
     fill: currentColor;
     display: inline-block;
     vertical-align: middle;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: start;
+}
+
+/* ==================================================== */
+/* RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS */
+/* ==================================================== */
+
+@media (max-width: 992px) {
+    /* 1. Dashboard layouts */
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    
+    /* 2. POS layouts */
+    .pos-layout {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+        overflow: visible !important;
+        gap: 20px;
+    }
+    
+    .pos-main {
+        overflow-y: visible !important;
+        height: auto !important;
+    }
+    
+    .pos-sidebar {
+        height: auto !important;
+        min-height: 400px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* 3. General Layout & Sidebar */
+    :root {
+        --sidebar-width: 0px !important;
+    }
+
+    .app-sidebar {
+        position: fixed !important;
+        top: 0;
+        bottom: 0;
+        width: 260px !important;
+        height: 100vh !important;
+        z-index: 10000 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        overflow-y: auto !important;
+    }
+
+    /* Support both html[dir] and body.ltr/rtl */
+    html[dir="ltr"] .app-sidebar,
+    body.ltr .app-sidebar {
+        left: 0 !important;
+        right: auto !important;
+        transform: translateX(-100%);
+    }
+
+    html[dir="rtl"] .app-sidebar,
+    body.rtl .app-sidebar {
+        right: 0 !important;
+        left: auto !important;
+        transform: translateX(100%);
+    }
+
+    .app-sidebar.active {
+        transform: translateX(0) !important;
+    }
+
+    .app-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+
+    .app-header {
+        padding: 0 15px !important;
+    }
+
+    .mobile-toggle-btn {
+        display: block !important;
+    }
+
+    .mobile-close-btn {
+        display: block !important;
+    }
+
+    .app-body {
+        padding: 15px !important;
+    }
+
+    /* 4. Stats grid */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    /* 5. Headers & Profile info */
+    .user-info-text {
+        display: none !important;
+    }
+
+    .pos-scan-bar {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        padding: 10px 15px !important;
+    }
+
+    /* 6. Sidebar Overlay Backdrop animation */
+    .sidebar-backdrop {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-backdrop.active {
+        opacity: 1 !important;
+    }
 }
 

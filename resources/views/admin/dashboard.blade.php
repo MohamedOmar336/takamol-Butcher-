@@ -43,7 +43,7 @@
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 30px; align-items: start;">
+<div class="dashboard-grid">
     <!-- Left Column Wrapper -->
     <div style="display: flex; flex-direction: column; gap: 30px;">
         <!-- Sales chart container -->
