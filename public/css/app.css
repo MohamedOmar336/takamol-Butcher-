@@ -20,9 +20,9 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     
-    --accent-color: #8b5cf6; /* Royal Purple */
-    --accent-hover: #7c3aed;
-    --accent-light: #f5f3ff;
+    --accent-color: #e11a22; /* DokkanHub Red */
+    --accent-hover: #c40e15;
+    --accent-light: #fef2f2;
     
     --success-color: #10b981; /* Emerald */
     --success-light: #ecfdf5;
@@ -54,7 +54,7 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
     
-    --accent-light: #2e1065;
+    --accent-light: #450a0a;
     --success-light: #064e3b;
     --danger-light: #7f1d1d;
     --warning-light: #78350f;
