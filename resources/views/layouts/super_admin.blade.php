@@ -7,7 +7,7 @@
     <title>@yield('title') | {{ app()->getLocale() === 'ar' ? 'المدير العام دكان' : 'Dukkan Super Admin' }}</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}">
     
     <!-- Inline script to prevent theme flashing -->
     <script>
@@ -25,7 +25,7 @@
         <!-- Sidebar Navigation -->
         <aside class="app-sidebar">
             <div class="brand" style="position: relative; width: 100%;">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" onerror="this.src='https://placehold.co/40x40/0d9488/fff?text=D'">
+                <img src="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}" alt="Logo" onerror="this.src='https://placehold.co/40x40/0d9488/fff?text=D'">
                 <span class="brand-name">{{ app()->getLocale() === 'ar' ? 'المدير العام' : 'Super Admin' }}</span>
                 <!-- Mobile close button -->
                 <button id="sidebarClose" class="mobile-close-btn" style="display: none; position: absolute; top: -5px; left: -5px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-secondary);" title="Close Sidebar">✕</button>

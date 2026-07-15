@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-root">
+<html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
@@ -7,14 +7,12 @@
     <title>دكان هب | نقطة البيع الذكية لكل محل</title>
     <meta name="description"
         content="دكان هب - منظومة POS متكاملة للمحلات التجارية. إدارة مبيعات، مخزون، تقارير يومية، فواتير حرارية، ودعم الموازين. ابدأ اليوم!">
-    <link rel="shortcut icon" type="image/jpeg"
-        href="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}">
+    <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <style>
         /* ==================== CSS VARIABLES ==================== */
@@ -66,6 +64,10 @@
             color: inherit;
         }
 
+        img {
+            max-width: 100%;
+        }
+
         /* ==================== PARTICLE CANVAS ==================== */
         #particles-canvas {
             position: fixed;
@@ -98,16 +100,14 @@
         }
 
         .nav-logo img {
-            height: 120px;
-            width: auto;
+            height: 38px;
             filter: drop-shadow(0 0 12px var(--red-glow));
         }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 14px;
         }
 
         .lang-btn {
@@ -128,27 +128,6 @@
             color: var(--white);
         }
 
-        .platform-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--card-border);
-            color: var(--text-light);
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .platform-btn:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-            color: var(--white);
-        }
-
         .nav-cta {
             background: var(--red);
             color: var(--white);
@@ -160,7 +139,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 20px var(--red-glow);
-            font-family: inherit;
         }
 
         .nav-cta:hover {
@@ -206,6 +184,11 @@
             animation: fadeInDown 0.8s ease;
         }
 
+        .hero-badge::before {
+            content: '🔴';
+            animation: pulse 2s infinite;
+        }
+
         @keyframes pulse {
 
             0%,
@@ -221,7 +204,7 @@
         .hero-title {
             font-size: clamp(2.4rem, 6vw, 4.2rem);
             font-weight: 900;
-            line-height: 1.25;
+            line-height: 1.2;
             margin-bottom: 22px;
             animation: fadeInUp 0.8s ease 0.2s both;
         }
@@ -230,29 +213,29 @@
             color: var(--red);
         }
 
-        .typed-cursor {
-            display: inline-block;
-            border-right: 3px solid var(--red);
-            margin-right: 2px;
+        .hero-title .typed-text {
+            color: var(--red);
+            border-left: 3px solid var(--red);
+            padding-left: 4px;
             animation: blink 0.8s infinite;
         }
 
-        body.en .typed-cursor {
-            border-right: none;
-            border-left: 3px solid var(--red);
-            margin-right: 0;
-            margin-left: 2px;
+        body.en .hero-title .typed-text {
+            border-left: none;
+            border-right: 3px solid var(--red);
+            padding-left: 0;
+            padding-right: 4px;
         }
 
         @keyframes blink {
 
             0%,
             100% {
-                opacity: 1
+                border-color: var(--red)
             }
 
             50% {
-                opacity: 0
+                border-color: transparent
             }
         }
 
@@ -261,6 +244,7 @@
             color: var(--text-muted);
             max-width: 620px;
             margin: 0 auto 40px;
+            font-weight: 400;
             animation: fadeInUp 0.8s ease 0.35s both;
         }
 
@@ -330,6 +314,11 @@
             animation: bounce 2s infinite;
         }
 
+        .hero-scroll-hint svg {
+            width: 20px;
+            height: 20px;
+        }
+
         @keyframes bounce {
 
             0%,
@@ -358,6 +347,8 @@
             gap: 30px;
             text-align: center;
         }
+
+        .stat-item {}
 
         .stat-num {
             font-size: 2.5rem;
@@ -394,6 +385,7 @@
             font-size: 0.82rem;
             font-weight: 700;
             margin-bottom: 16px;
+            letter-spacing: 0.5px;
         }
 
         .section-title {
@@ -408,14 +400,6 @@
             font-size: 1rem;
             max-width: 580px;
             margin: 0 auto;
-        }
-
-        .glow-divider {
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--red), transparent);
-            margin: 0 auto 20px;
-            border-radius: 2px;
         }
 
         /* ==================== FEATURES ==================== */
@@ -494,6 +478,7 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
+            gap: 0;
         }
 
         .step-item {
@@ -711,133 +696,6 @@
             transform: translateY(-2px);
         }
 
-        /* ==================== STORE ACCESS MODAL ==================== */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-box {
-            background: #111118;
-            border: 1px solid rgba(225, 26, 34, 0.3);
-            border-radius: 24px;
-            padding: 40px 36px;
-            max-width: 460px;
-            width: 90%;
-            position: relative;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 0 60px rgba(225, 26, 34, 0.2);
-        }
-
-        .modal-overlay.active .modal-box {
-            transform: translateY(0);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.4rem;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        body.en .modal-close {
-            left: auto;
-            right: 16px;
-        }
-
-        .modal-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .modal-sub {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 26px;
-        }
-
-        .modal-slug-row {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.03);
-            margin-bottom: 14px;
-            transition: border-color 0.2s;
-        }
-
-        .modal-slug-row:focus-within {
-            border-color: var(--red);
-        }
-
-        .modal-slug-input {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 14px 16px;
-            color: var(--text);
-            font-size: 1rem;
-            font-family: 'Outfit', sans-serif;
-            outline: none;
-            direction: ltr;
-        }
-
-        .modal-slug-suffix {
-            padding: 14px 16px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-family: 'Outfit', sans-serif;
-            border-right: 1px solid var(--card-border);
-        }
-
-        body.en .modal-slug-suffix {
-            border-right: none;
-            border-left: 1px solid var(--card-border);
-        }
-
-        .modal-submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--red);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 24px var(--red-glow);
-        }
-
-        .modal-submit-btn:hover {
-            background: var(--red-dark);
-            transform: translateY(-2px);
-        }
-
         /* ==================== CONTACT ==================== */
         .contact-section {
             background: var(--bg2);
@@ -919,7 +777,6 @@
             transition: all 0.3s ease;
             box-shadow: 0 8px 30px rgba(37, 211, 102, 0.3);
             font-family: inherit;
-            text-decoration: none;
         }
 
         .whatsapp-btn:hover {
@@ -931,7 +788,7 @@
         footer {
             background: var(--bg);
             border-top: 1px solid var(--card-border);
-            padding: 40px;
+            padding: 40px 40px;
             text-align: center;
         }
 
@@ -998,6 +855,50 @@
             transition-delay: 0.3s;
         }
 
+        .reveal-delay-4 {
+            transition-delay: 0.4s;
+        }
+
+        /* ==================== GLOWING DIVIDER ==================== */
+        .glow-divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--red), transparent);
+            margin: 0 auto 20px;
+            border-radius: 2px;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 14px 20px;
+            }
+
+            .hero {
+                padding: 100px 16px 70px;
+            }
+
+            .section-pad {
+                padding: 70px 16px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-card {
+                padding: 40px 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-item {
+                grid-template-columns: 50px 1fr;
+            }
+        }
+
         /* ==================== FLOATING WHATSAPP ==================== */
         .floating-wa {
             position: fixed;
@@ -1025,7 +926,7 @@
         }
 
         .floating-wa:hover {
-            transform: scale(1.12) !important;
+            transform: scale(1.12);
         }
 
         @keyframes float-wa {
@@ -1040,40 +941,12 @@
             }
         }
 
-        /* ==================== RESPONSIVE ==================== */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 14px 16px;
-                gap: 8px;
-            }
-
-            .nav-actions {
-                gap: 8px;
-            }
-
-            .platform-btn span {
-                display: none;
-            }
-
-            .hero {
-                padding: 100px 16px 70px;
-            }
-
-            .section-pad {
-                padding: 70px 16px;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-card {
-                padding: 40px 24px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
+        /* ==================== GRADIENT TEXT ==================== */
+        .grad-text {
+            background: linear-gradient(135deg, var(--red), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
@@ -1086,52 +959,25 @@
     <!-- Floating WhatsApp -->
     <a href="https://wa.me/201111847054" target="_blank" class="floating-wa" title="تواصل عبر واتسآب">💬</a>
 
-    <!-- Store Access Modal -->
-    <div class="modal-overlay" id="storeModal">
-        <div class="modal-box">
-            <button class="modal-close" onclick="closeStoreModal()">✕</button>
-            <h2 class="modal-title" id="modalTitle">ادخل على متجرك</h2>
-            <p class="modal-sub" id="modalSub">أدخل اسم متجرك للوصول لنظام الكاشير الخاص بك</p>
-            <form action="{{ route('central.redirect_store') }}" method="POST">
-                @csrf
-                @if($errors->any())
-                    <p style="color:#ef4444;font-size:0.85rem;margin-bottom:12px;">{{ $errors->first() }}</p>
-                @endif
-                <div class="modal-slug-row">
-                    <input type="text" name="slug" class="modal-slug-input" placeholder="takamul" required
-                        value="{{ old('slug') }}" autocomplete="off">
-                    @php $centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost'; @endphp
-                    <span class="modal-slug-suffix">.{{ $centralDomain }}</span>
-                </div>
-                <button type="submit" class="modal-submit-btn" id="modalSubmit">🚀 انتقل للكاشير</button>
-            </form>
-        </div>
-    </div>
-
     <!-- ==================== NAVBAR ==================== -->
     <nav class="navbar" id="navbar">
         <div class="nav-logo">
-            <a href="#"><img src="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}"
-                    alt="DokkanHub" onerror="this.src='https://placehold.co/160x38/e11a22/white?text=dokkanhub'"></a>
+            <a href="#"><img src="/images/logo.jpg" alt="DokkanHub Logo"
+                    onerror="this.src='https://placehold.co/160x40/e11a22/white?text=dokkanhub'"></a>
         </div>
         <div class="nav-actions">
             <button class="lang-btn" id="langToggle" onclick="toggleLang()">EN</button>
-            <a href="{{ route('super_admin.login') }}">
-                <button class="platform-btn" id="platformBtn">
-                    <span>🏢</span>
-                    <span id="platformBtnText">منصة الإدارة</span>
-                </button>
-            </a>
-            <button class="nav-cta" id="navCta" onclick="openStoreModal()">ادخل على متجرك 🔑</button>
+            <a href="https://wa.me/201111847054" target="_blank"><button class="nav-cta" id="navCta">ابدأ الآن
+                    🚀</button></a>
         </div>
     </nav>
 
     <!-- ==================== HERO ==================== -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <div class="hero-badge" id="heroBadge">🔴 منظومة POS الأذكى في مصر</div>
+            <div class="hero-badge" id="heroBadge">منظومة POS الأذكى في مصر</div>
             <h1 class="hero-title" id="heroTitle">
-                إدارة <span class="brand-red"><span id="heroTyped"></span><span class="typed-cursor"></span></span>
+                إدارة <span class="brand-red" id="heroTyped">محلك</span>
                 <br>بدقة وسهولة مع <span class="brand-red">دكان هب</span>
             </h1>
             <p class="hero-sub" id="heroSub">
@@ -1139,13 +985,17 @@
                 ☕
             </p>
             <div class="hero-btns">
-                <button class="btn-primary-hero" id="heroCta" onclick="openStoreModal()">🔑 ادخل على متجرك</button>
-                <a href="#pricing"><button class="btn-secondary-hero" id="heroPlans">📋 شوف الخطط</button></a>
+                <a href="https://wa.me/201111847054" target="_blank">
+                    <button class="btn-primary-hero" id="heroCta">💬 ابدأ تجربتك الآن</button>
+                </a>
+                <a href="#pricing">
+                    <button class="btn-secondary-hero" id="heroPlans">📋 شوف الخطط</button>
+                </a>
             </div>
         </div>
         <div class="hero-scroll-hint">
             <span id="scrollHint">مرر للأسفل</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9" />
             </svg>
         </div>
@@ -1167,7 +1017,7 @@
                 <span class="stat-label" id="stat3">وقت تشغيل مستمر</span>
             </div>
             <div class="stat-item reveal reveal-delay-3">
-                <span class="stat-num" data-target="50" data-prefix="من " data-suffix=" جنيه/يوم">0</span>
+                <span class="stat-num" data-target="66" data-suffix=" جنيه/يوم" data-prefix="من ">0</span>
                 <span class="stat-label" id="stat4">تكلفة الاشتراك اليومية</span>
             </div>
         </div>
@@ -1284,8 +1134,10 @@
                 الكاملة</p>
         </div>
         <div class="pricing-grid">
+
+            <!-- Plan 1: Monthly -->
             <div class="pricing-card reveal">
-                <div class="plan-name" id="p1name">الخطة العادية</div>
+                <div class="plan-name" id="p1name">الخطة الشهرية</div>
                 <div class="plan-price-row">
                     <span class="plan-price" id="p1price">2,000</span>
                     <span class="plan-currency" id="p1curr">جنيه</span>
@@ -1302,38 +1154,44 @@
                     <li id="pf1_6">إدارة العملاء والديون</li>
                     <li id="pf1_7">دعم فني متواصل</li>
                 </ul>
-                <a href="https://wa.me/201111847054?text=أهلاً، عايز أشترك في الخطة العادية 2000 جنيه" target="_blank">
-                    <button class="plan-btn plan-btn-outline" id="p1btn">ابدأ بالخطة العادية</button>
+                <a href="https://wa.me/201111847054?text=أهلاً، عايز أشترك في الخطة الشهرية 2000 جنيه" target="_blank">
+                    <button class="plan-btn plan-btn-outline" id="p1btn">ابدأ بالخطة الشهرية</button>
                 </a>
             </div>
+
+            <!-- Plan 2: Annual Save -->
             <div class="pricing-card popular reveal reveal-delay-1">
-                <div class="popular-badge" id="popBadge">⭐ الأوفر والأقوى</div>
+                <div class="popular-badge" id="popBadge">⭐ الأوفر والأذكى</div>
                 <div class="plan-name" id="p2name">خطة التوفير السنوي</div>
-                <div class="plan-onetime" id="p2onetime">دفعة أولى 10,000 جنيه عند البدء</div>
+                <div class="plan-onetime" id="p2onetime">دفعة أولى 10,000 جنيه مرة واحدة</div>
                 <div class="plan-price-row">
-                    <span class="plan-price" id="p2price">2,000</span>
+                    <span class="plan-price" id="p2price">1,500</span>
                     <span class="plan-currency" id="p2curr">جنيه</span>
-                    <span class="plan-period" id="p2period">/ 3 أشهر</span>
+                    <span class="plan-period" id="p2period">/ شهر</span>
                 </div>
-                <div class="plan-daily" id="p2daily">وفر 6,000 جنيه سنوياً! 🔥</div>
+                <div class="plan-daily" id="p2daily">≈ 50 جنيه في اليوم 🔥 وفر 500/شهر!</div>
                 <hr class="plan-divider">
                 <ul class="plan-features">
-                    <li id="pf2_1">كل مميزات الخطة العادية</li>
+                    <li id="pf2_1">كل مميزات الخطة الشهرية</li>
                     <li id="pf2_2">أولوية الدعم الفني</li>
-                    <li id="pf2_3">توفير 6,000 جنيه سنوياً</li>
+                    <li id="pf2_3">توفير 500 جنيه كل شهر</li>
                     <li id="pf2_4">إعداد مجاني كامل</li>
                     <li id="pf2_5">تدريب مجاني للموظفين</li>
                     <li id="pf2_6">تخصيص شعار وإعدادات المتجر</li>
                     <li id="pf2_7">تقارير متقدمة ومخصصة</li>
                 </ul>
-                <a href="https://wa.me/201111847054?text=أهلاً، عايز أشترك في خطة التوفير 10000 دفعة أولى + 2000 كل 3 أشهر"
+                <a href="https://wa.me/201111847054?text=أهلاً، عايز أشترك في خطة التوفير السنوي 10000 دفعة أولى + 1500 شهري"
                     target="_blank">
                     <button class="plan-btn plan-btn-solid" id="p2btn">ابدأ بخطة التوفير ⚡</button>
                 </a>
             </div>
+
         </div>
-        <p style="text-align:center;color:var(--text-muted);margin-top:30px;font-size:0.9rem;" id="pricingNote">💬 مش
-            متأكد؟ تواصل معنا وهنساعدك تختار الأنسب لمحلك</p>
+
+        <!-- Pricing Note -->
+        <p style="text-align:center;color:var(--text-muted);margin-top:30px;font-size:0.9rem;" id="pricingNote">
+            💬 مش متأكد؟ تواصل معنا وهنساعدك تختار الأنسب لمحلك
+        </p>
     </section>
 
     <!-- ==================== CONTACT ==================== -->
@@ -1343,50 +1201,93 @@
             <h2 class="contact-title" id="contactTitle">خد الخطوة الأولى النهارده</h2>
             <p class="contact-sub" id="contactSub">فريقنا جاهز يساعدك تبدأ وتشغل محلك بأحدث نظام POS في مصر</p>
             <div class="contact-info">
-                <div class="contact-info-item"><span class="icon">📞</span><span>+2 01111847054</span></div>
-                <div class="contact-info-item"><span class="icon">✉️</span><span>sales@dokkanhub.com</span></div>
+                <div class="contact-info-item">
+                    <span class="icon">📞</span>
+                    <span>+2 01111847054</span>
+                </div>
+                <div class="contact-info-item">
+                    <span class="icon">✉️</span>
+                    <span>sales@dokkanhub.com</span>
+                </div>
             </div>
-            <a href="https://wa.me/201111847054?text=أهلاً دكان هب، عايز أعرف أكتر عن النظام" target="_blank"
-                class="whatsapp-btn">
-                <span>💬</span><span id="waBtnText">ابعتلنا على واتسآب دلوقتي</span>
+            <a href="https://wa.me/201111847054?text=أهلاً دكان هب، عايز أعرف أكتر عن النظام" target="_blank">
+                <button class="whatsapp-btn" id="waCta">
+                    <span>💬</span>
+                    <span id="waBtnText">ابعتلنا على واتسآب دلوقتي</span>
+                </button>
             </a>
         </div>
     </section>
 
     <!-- ==================== FOOTER ==================== -->
     <footer>
-        <div class="footer-logo"><img
-                src="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}" alt="DokkanHub"
-                onerror="this.src='https://placehold.co/120x30/e11a22/white?text=dokkanhub'"></div>
+        <div class="footer-logo">
+            <img src="/images/logo.jpg" alt="DokkanHub"
+                onerror="this.src='https://placehold.co/120x30/e11a22/white?text=dokkanhub'">
+        </div>
         <p class="footer-copy" id="footerCopy">© 2026 دكان هب — جميع الحقوق محفوظة | <a
                 href="mailto:sales@dokkanhub.com">sales@dokkanhub.com</a></p>
     </footer>
 
+    <!-- ==================== SCRIPTS ==================== -->
     <script>
         /* ===================== PARTICLES ===================== */
         (function () {
             const canvas = document.getElementById('particles-canvas');
             const ctx = canvas.getContext('2d');
             let W, H, particles = [];
-            function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
             window.addEventListener('resize', resize);
             resize();
-            for (let i = 0; i < 80; i++) {
-                particles.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.8 + 0.4, dx: (Math.random() - 0.5) * 0.4, dy: (Math.random() - 0.5) * 0.4, alpha: Math.random() * 0.5 + 0.1, color: Math.random() > 0.7 ? '#e11a22' : '#ffffff' });
+
+            const PARTICLE_COUNT = 80;
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    r: Math.random() * 1.8 + 0.4,
+                    dx: (Math.random() - 0.5) * 0.4,
+                    dy: (Math.random() - 0.5) * 0.4,
+                    alpha: Math.random() * 0.5 + 0.1,
+                    color: Math.random() > 0.7 ? '#e11a22' : '#ffffff'
+                });
             }
+
             function draw() {
                 ctx.clearRect(0, 0, W, H);
                 particles.forEach(p => {
-                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha; ctx.fill();
-                    p.x += p.dx; p.y += p.dy;
-                    if (p.x < 0) p.x = W; if (p.x > W) p.x = 0; if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fill();
+
+                    p.x += p.dx;
+                    p.y += p.dy;
+
+                    if (p.x < 0) p.x = W;
+                    if (p.x > W) p.x = 0;
+                    if (p.y < 0) p.y = H;
+                    if (p.y > H) p.y = 0;
                 });
+
+                // Draw connections
                 ctx.globalAlpha = 1;
                 for (let i = 0; i < particles.length; i++) {
                     for (let j = i + 1; j < particles.length; j++) {
                         const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
-                        if (dist < 100) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.strokeStyle = `rgba(225,26,34,${0.08 * (1 - dist / 100)})`; ctx.lineWidth = 0.5; ctx.stroke(); }
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(225,26,34,${0.08 * (1 - dist / 100)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
                     }
                 }
                 requestAnimationFrame(draw);
@@ -1395,13 +1296,19 @@
         })();
 
         /* ===================== NAVBAR SCROLL ===================== */
+        const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
         });
 
         /* ===================== SCROLL REVEAL ===================== */
-        const observer = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.12 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); }
+            });
+        }, { threshold: 0.12 });
+        reveals.forEach(el => observer.observe(el));
 
         /* ===================== COUNTER ANIMATION ===================== */
         function animateCounter(el) {
@@ -1409,17 +1316,27 @@
             const suffix = el.getAttribute('data-suffix') || '';
             const prefix = el.getAttribute('data-prefix') || '';
             const decimals = parseInt(el.getAttribute('data-decimal') || '0');
+            const duration = 2000;
             const start = performance.now();
+
             function step(now) {
-                const p = Math.min((now - start) / 2000, 1);
-                const ease = 1 - Math.pow(1 - p, 3);
+                const progress = Math.min((now - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
                 const val = (target * ease).toFixed(decimals);
                 el.textContent = prefix + (decimals > 0 ? val : parseInt(val).toLocaleString()) + suffix;
-                if (p < 1) requestAnimationFrame(step);
+                if (progress < 1) requestAnimationFrame(step);
             }
             requestAnimationFrame(step);
         }
-        const counterObs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting && !e.target.dataset.counted) { e.target.dataset.counted = '1'; animateCounter(e.target); } }), { threshold: 0.5 });
+
+        const counterObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting && !e.target.dataset.counted) {
+                    e.target.dataset.counted = '1';
+                    animateCounter(e.target);
+                }
+            });
+        }, { threshold: 0.5 });
         document.querySelectorAll('.stat-num').forEach(el => counterObs.observe(el));
 
         /* ===================== TYPED TEXT ===================== */
@@ -1428,31 +1345,45 @@
         const arWords = ['محلك', 'جزارتك', 'سوبرماركتك', 'متجرك', 'عملك'];
         const enWords = ['Store', 'Butcher Shop', 'Supermarket', 'Business', 'Shop'];
         let wordIdx = 0;
+
         function typeWord() {
             const words = isAr ? arWords : enWords;
             const word = words[wordIdx % words.length];
             typedEl.textContent = '';
-            let i = 0;
-            function add() { if (i < word.length) { typedEl.textContent += word[i++]; setTimeout(add, 110); } else { setTimeout(del, 1800); } }
-            function del() { if (typedEl.textContent.length > 0) { typedEl.textContent = typedEl.textContent.slice(0, -1); setTimeout(del, 60); } else { wordIdx++; setTimeout(typeWord, 400); } }
-            add();
+            let charIdx = 0;
+
+            function addChar() {
+                if (charIdx < word.length) {
+                    typedEl.textContent += word[charIdx++];
+                    setTimeout(addChar, 110);
+                } else {
+                    setTimeout(deleteWord, 1800);
+                }
+            }
+            function deleteWord() {
+                if (typedEl.textContent.length > 0) {
+                    typedEl.textContent = typedEl.textContent.slice(0, -1);
+                    setTimeout(deleteWord, 60);
+                } else {
+                    wordIdx++;
+                    setTimeout(typeWord, 400);
+                }
+            }
+            addChar();
         }
         typeWord();
 
-        /* ===================== STORE MODAL ===================== */
-        function openStoreModal() { document.getElementById('storeModal').classList.add('active'); }
-        function closeStoreModal() { document.getElementById('storeModal').classList.remove('active'); }
-        document.getElementById('storeModal').addEventListener('click', function (e) { if (e.target === this) closeStoreModal(); });
-        @if($errors->any())
-            document.addEventListener('DOMContentLoaded', () => openStoreModal());
-        @endif
-
-/* ===================== LANG TOGGLE ===================== */
-const T = {
+        /* ===================== LANG TOGGLE ===================== */
+        const translations = {
             ar: {
-                heroBadge: '🔴 منظومة POS الأذكى في مصر', heroSub: 'نقطة بيع ذكية، تقارير يومية، فواتير حرارية، وإدارة مخزون — كل ده في إيدك بثمن أقل من فنجان قهوة في اليوم ☕',
-                heroCta: '🔑 ادخل على متجرك', heroPlans: '📋 شوف الخطط', navCta: 'ادخل على متجرك 🔑',
-                platformBtnText: 'منصة الإدارة', scrollHint: 'مرر للأسفل',
+                heroBadge: 'منظومة POS الأذكى في مصر',
+                heroTitle_pre: 'إدارة ',
+                heroTitle_post: '<br>بدقة وسهولة مع <span class="brand-red">دكان هب</span>',
+                heroSub: 'نقطة بيع ذكية، تقارير يومية، فواتير حرارية، وإدارة مخزون — كل ده في إيدك بثمن أقل من فنجان قهوة في اليوم ☕',
+                heroCta: '💬 ابدأ تجربتك الآن',
+                heroPlans: '📋 شوف الخطط',
+                navCta: 'ابدأ الآن 🚀',
+                scrollHint: 'مرر للأسفل',
                 stat1: 'محل يستخدم دكان هب', stat2: 'فاتورة يومياً', stat3: 'وقت تشغيل مستمر', stat4: 'تكلفة الاشتراك اليومية',
                 featuresTag: 'المميزات', featuresTitle: 'كل اللي محلك محتاجه في مكان واحد', featuresDesc: 'دكان هب بيديك أدوات احترافية بدون تعقيد — بسيطة، سريعة، وبتشتغل معاك من أول يوم',
                 f1t: 'نقطة بيع ذكية (POS)', f1d: 'واجهة كاشير سريعة وسهلة، دعم الباركود والمسح، وبيع بالكيلو أو القطعة بضغطة واحدة',
@@ -1469,69 +1400,102 @@ const T = {
                 s3t: 'أضف منتجاتك', s3d: 'أضف منتجاتك يدوياً أو استوردها من ملف Excel — الكاشير جاهز فوراً',
                 s4t: 'ابدأ البيع وتابع تقاريرك', s4d: 'الكاشير شغال، التقارير بتيجي على إيميلك كل يوم، وإنت مرتاح البال',
                 pricingTag: 'الأسعار', pricingTitle: 'خطط واضحة، بدون مفاجآت', pricingDesc: 'اختار الخطة اللي تناسبك — كل الخطط فيها نفس المميزات الاحترافية الكاملة',
-                p1name: 'الخطة العادية', p1price: '2,000', p1curr: 'جنيه', p1period: '/ شهر', p1daily: '≈ 66.6 جنيه في اليوم 💡',
+                p1name: 'الخطة الشهرية', p1price: '2,000', p1curr: 'جنيه', p1period: '/ شهر', p1daily: '≈ 66.6 جنيه في اليوم 💡',
                 pf1_1: 'نقطة بيع كاملة بكاشير متعدد', pf1_2: 'تقارير يومية على البريد الإلكتروني', pf1_3: 'فواتير حرارية بشعار محلك', pf1_4: 'دعم الموازين الحرارية', pf1_5: 'إدارة المخزون والموظفين', pf1_6: 'إدارة العملاء والديون', pf1_7: 'دعم فني متواصل',
-                p1btn: 'ابدأ بالخطة العادية', popBadge: '⭐ الأوفر والأقوى',
-                p2name: 'خطة التوفير السنوي', p2onetime: 'دفعة أولى 10,000 جنيه عند البدء', p2price: '2,000', p2curr: 'جنيه', p2period: '/ 3 أشهر', p2daily: 'وفر 6,000 جنيه سنوياً! 🔥',
-                pf2_1: 'كل مميزات الخطة العادية', pf2_2: 'أولوية الدعم الفني', pf2_3: 'توفير 6,000 جنيه سنوياً', pf2_4: 'إعداد مجاني كامل', pf2_5: 'تدريب مجاني للموظفين', pf2_6: 'تخصيص شعار وإعدادات المتجر', pf2_7: 'تقارير متقدمة ومخصصة',
-                p2btn: 'ابدأ بخطة التوفير ⚡', pricingNote: '💬 مش متأكد؟ تواصل معنا وهنساعدك تختار الأنسب لمحلك',
+                p1btn: 'ابدأ بالخطة الشهرية',
+                popBadge: '⭐ الأوفر والأذكى',
+                p2name: 'خطة التوفير السنوي', p2onetime: 'دفعة أولى 10,000 جنيه مرة واحدة', p2price: '1,500', p2curr: 'جنيه', p2period: '/ شهر', p2daily: '≈ 50 جنيه في اليوم 🔥 وفر 500/شهر!',
+                pf2_1: 'كل مميزات الخطة الشهرية', pf2_2: 'أولوية الدعم الفني', pf2_3: 'توفير 500 جنيه كل شهر', pf2_4: 'إعداد مجاني كامل', pf2_5: 'تدريب مجاني للموظفين', pf2_6: 'تخصيص شعار وإعدادات المتجر', pf2_7: 'تقارير متقدمة ومخصصة',
+                p2btn: 'ابدأ بخطة التوفير ⚡',
+                pricingNote: '💬 مش متأكد؟ تواصل معنا وهنساعدك تختار الأنسب لمحلك',
                 contactTag: 'تواصل معنا', contactTitle: 'خد الخطوة الأولى النهارده', contactSub: 'فريقنا جاهز يساعدك تبدأ وتشغل محلك بأحدث نظام POS في مصر',
                 waBtnText: 'ابعتلنا على واتسآب دلوقتي',
-                modalTitle: 'ادخل على متجرك', modalSub: 'أدخل اسم متجرك للوصول لنظام الكاشير الخاص بك', modalSubmit: '🚀 انتقل للكاشير',
                 footerCopy: '© 2026 دكان هب — جميع الحقوق محفوظة | '
             },
             en: {
-                heroBadge: "🔴 Egypt's Smartest POS System", heroSub: "Smart POS, daily email reports, thermal invoices & inventory management — all in your hands for less than the cost of a coffee per day ☕",
-                heroCta: '🔑 Access Your Store', heroPlans: '📋 View Plans', navCta: 'Access Your Store 🔑',
-                platformBtnText: 'Admin Platform', scrollHint: 'Scroll down',
-                stat1: 'Stores using DokkanHub', stat2: 'Daily invoices', stat3: 'Uptime', stat4: 'Starting cost per day',
+                heroBadge: "Egypt's Smartest POS System",
+                heroSub: 'Smart POS, daily email reports, thermal invoices & inventory management — all in your hands for less than a coffee a day ☕',
+                heroCta: '💬 Start Your Journey',
+                heroPlans: '📋 View Plans',
+                navCta: 'Get Started 🚀',
+                scrollHint: 'Scroll down',
+                stat1: 'Stores using DokkanHub', stat2: 'Daily invoices', stat3: 'Uptime', stat4: 'Cost per day from',
                 featuresTag: 'Features', featuresTitle: 'Everything Your Business Needs, In One Place', featuresDesc: 'DokkanHub gives you professional tools without complexity — simple, fast, and ready from day one',
                 f1t: 'Smart POS Terminal', f1d: 'Fast & intuitive cashier interface, barcode scanning, sell by weight or unit with a single tap',
-                f2t: 'Thermal Scale Support', f2d: 'Automatically reads scale barcodes, records weight & price instantly — perfect for butcher shops & supermarkets',
-                f3t: 'Automatic Thermal Invoices', f3d: 'Professional invoice with your store logo printed automatically after every sale',
+                f2t: 'Thermal Scale Support', f2d: 'Automatically reads scale barcodes, records weight and price instantly — perfect for butcher shops and supermarkets',
+                f3t: 'Automatic Thermal Invoices', f3d: 'Professional invoice with your store logo printed automatically after every sale — date, details, and all',
                 f4t: 'Inventory Management', f4d: 'Track your stock in real-time, low-stock alerts, and easy product import from Excel',
-                f5t: 'Daily Reports to Your Email', f5d: 'Every evening, a full sales report with top products and low-stock warnings delivered to your inbox',
-                f6t: 'Multi-Cashier & Permissions', f6d: 'Add multiple employees, set specific permissions for each, and track every cashier\'s performance',
-                f7t: 'Customer Debt Management', f7d: 'Register customers, track debts, and issue receipts on payment — all in one place',
-                f8t: 'Your Logo Everywhere', f8d: 'Upload your store logo and it appears on the POS, invoices, and even the browser favicon',
-                howTag: 'How It Works', howTitle: 'Start in 4 Simple Steps', howDesc: "No complex setup — you're operational from day one",
-                s1t: 'Contact Us on WhatsApp', s1d: 'Send us one message and our team will respond within minutes',
-                s2t: 'We Set Up Your Store', s2d: 'We create your own account with a unique subdomain — done in minutes',
+                f5t: 'Daily Reports to Your Email', f5d: 'Every evening, a full sales report with top products and low-stock alerts delivered to your inbox',
+                f6t: 'Multi-Cashier & Permissions', f6d: 'Add multiple employees, set specific permissions for each, and track each cashier\'s performance separately',
+                f7t: 'Customer Debt Management', f7d: 'Register customers, track their debts, and issue receipts on payment — all in one place',
+                f8t: 'Your Logo Everywhere', f8d: 'Upload your store logo and it appears on the POS, invoices, and even the browser favicon — full brand identity',
+                howTag: 'How It Works', howTitle: 'Start in 4 Simple Steps', howDesc: 'No complex setup — you\'re operational from day one',
+                s1t: 'Contact Us on WhatsApp', s1d: 'Send us one message and our team will respond within minutes and walk you through everything',
+                s2t: 'We Set Up Your Store', s2d: 'We create your own account with your unique subdomain — done in minutes',
                 s3t: 'Add Your Products', s3d: 'Add products manually or import from Excel — your POS is ready immediately',
                 s4t: 'Start Selling & Track Reports', s4d: 'The cashier is running, reports come to your email daily, and you have total peace of mind',
                 pricingTag: 'Pricing', pricingTitle: 'Clear Plans, No Surprises', pricingDesc: 'Choose the plan that suits you — all plans include the full professional feature set',
-                p1name: 'Standard Plan', p1price: '2,000', p1curr: 'EGP', p1period: '/ month', p1daily: '≈ 66.6 EGP per day 💡',
+                p1name: 'Monthly Plan', p1price: '2,000', p1curr: 'EGP', p1period: '/ month', p1daily: '≈ 66.6 EGP per day 💡',
                 pf1_1: 'Full POS with multi-cashier', pf1_2: 'Daily email sales reports', pf1_3: 'Thermal invoices with your logo', pf1_4: 'Thermal scale support', pf1_5: 'Inventory & staff management', pf1_6: 'Customer & debt management', pf1_7: 'Continuous technical support',
-                p1btn: 'Start Standard Plan', popBadge: '⭐ Best Value',
-                p2name: 'Annual Savings Plan', p2onetime: 'One-time setup fee: 10,000 EGP', p2price: '2,000', p2curr: 'EGP', p2period: '/ 3 months', p2daily: 'Save 6,000 EGP per year! 🔥',
-                pf2_1: 'All Standard Plan features', pf2_2: 'Priority technical support', pf2_3: 'Save 6,000 EGP per year', pf2_4: 'Free full setup', pf2_5: 'Free staff training', pf2_6: 'Custom logo & store settings', pf2_7: 'Advanced custom reports',
-                p2btn: 'Start Savings Plan ⚡', pricingNote: "💬 Not sure? Contact us and we'll help you choose what's best for your business",
+                p1btn: 'Start Monthly Plan',
+                popBadge: '⭐ Best Value',
+                p2name: 'Annual Savings Plan', p2onetime: 'One-time setup fee: 10,000 EGP', p2price: '1,500', p2curr: 'EGP', p2period: '/ month', p2daily: '≈ 50 EGP per day 🔥 Save 500/month!',
+                pf2_1: 'All Monthly Plan features', pf2_2: 'Priority technical support', pf2_3: 'Save 500 EGP every month', pf2_4: 'Free full setup', pf2_5: 'Free staff training', pf2_6: 'Custom logo & store settings', pf2_7: 'Advanced custom reports',
+                p2btn: 'Start Savings Plan ⚡',
+                pricingNote: "💬 Not sure? Contact us and we'll help you choose what's best for your business",
                 contactTag: 'Contact Us', contactTitle: 'Take the First Step Today', contactSub: "Our team is ready to help you launch your business with Egypt's most advanced POS system",
                 waBtnText: 'Message Us on WhatsApp Now',
-                modalTitle: 'Access Your Store', modalSub: 'Enter your store name to access your dedicated POS system', modalSubmit: '🚀 Go to POS',
                 footerCopy: '© 2026 DokkanHub — All Rights Reserved | '
             }
         };
 
         let currentLang = 'ar';
-        function toggleLang() { currentLang = currentLang === 'ar' ? 'en' : 'ar'; isAr = currentLang === 'ar'; applyLang(currentLang); }
+
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            isAr = currentLang === 'ar';
+            applyLang(currentLang);
+        }
+
         function applyLang(lang) {
-            const t = T[lang];
+            const t = translations[lang];
             const isArabic = lang === 'ar';
-            document.getElementById('html-root').setAttribute('lang', lang);
-            document.getElementById('html-root').setAttribute('dir', isArabic ? 'rtl' : 'ltr');
+            const html = document.documentElement;
+
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', isArabic ? 'rtl' : 'ltr');
             document.body.classList.toggle('en', !isArabic);
             document.getElementById('langToggle').textContent = isArabic ? 'EN' : 'ع';
-            document.title = isArabic ? 'دكان هب | نقطة البيع الذكية لكل محل' : 'DokkanHub | Smart POS for Every Business';
-            const ids = Object.keys(t);
+
+            // Update all translatable elements
+            const ids = [
+                'heroBadge', 'heroSub', 'heroCta', 'heroPlans', 'navCta', 'scrollHint',
+                'stat1', 'stat2', 'stat3', 'stat4',
+                'featuresTag', 'featuresTitle', 'featuresDesc',
+                'f1t', 'f1d', 'f2t', 'f2d', 'f3t', 'f3d', 'f4t', 'f4d', 'f5t', 'f5d', 'f6t', 'f6d', 'f7t', 'f7d', 'f8t', 'f8d',
+                'howTag', 'howTitle', 'howDesc', 's1t', 's1d', 's2t', 's2d', 's3t', 's3d', 's4t', 's4d',
+                'pricingTag', 'pricingTitle', 'pricingDesc',
+                'p1name', 'p1price', 'p1curr', 'p1period', 'p1daily',
+                'pf1_1', 'pf1_2', 'pf1_3', 'pf1_4', 'pf1_5', 'pf1_6', 'pf1_7', 'p1btn',
+                'popBadge', 'p2name', 'p2onetime', 'p2price', 'p2curr', 'p2period', 'p2daily',
+                'pf2_1', 'pf2_2', 'pf2_3', 'pf2_4', 'pf2_5', 'pf2_6', 'pf2_7', 'p2btn',
+                'pricingNote',
+                'contactTag', 'contactTitle', 'contactSub', 'waBtnText', 'footerCopy'
+            ];
             ids.forEach(id => {
                 const el = document.getElementById(id);
-                if (el && t[id] !== undefined && id !== 'footerCopy') el.textContent = t[id];
+                if (el && t[id] !== undefined) el.textContent = t[id];
             });
+
+            // Footer link rebuild
             const fc = document.getElementById('footerCopy');
             if (fc) fc.innerHTML = t.footerCopy + '<a href="mailto:sales@dokkanhub.com">sales@dokkanhub.com</a>';
+
+            // Page title
+            document.title = isArabic ? 'دكان هب | نقطة البيع الذكية لكل محل' : 'DokkanHub | Smart POS for Every Business';
         }
     </script>
+
 </body>
 
 </html>

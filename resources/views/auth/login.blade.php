@@ -7,7 +7,7 @@
     <title>{{ __('messages.login') }} | {{ __('messages.app_name') }}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}">
 
     <script>
         const storedTheme = localStorage.getItem('theme') || 'light';
