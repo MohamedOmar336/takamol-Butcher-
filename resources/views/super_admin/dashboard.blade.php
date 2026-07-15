@@ -130,6 +130,7 @@
                                                 data-slug="{{ $tenant->slug }}"
                                                 data-store-type="{{ $tenant->store_type }}"
                                                 data-owner-email="{{ $tenant->owner_email }}"
+                                                data-report-email="{{ $tenant->settings['report_email'] ?? '' }}"
                                                 data-logo="{{ isset($tenant->settings['logo']) ? asset($tenant->settings['logo']) : '' }}">
                                             ✏️ {{ app()->getLocale() === 'ar' ? 'تعديل' : 'Edit' }}
                                         </button>
@@ -231,6 +232,18 @@
                     @enderror
                 </div>
 
+                <!-- Report Email -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني لاستلام التقارير' : 'Report Email Address' }}</label>
+                    <input type="email" name="report_email" class="form-control" placeholder="e.g. reports@store.com" value="{{ old('report_email') }}" style="text-align: ltr;">
+                    <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                        {{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني الذي ستُرسل إليه تقارير المبيعات اليومية تلقائياً (اتركه فارغاً للاستلام على بريد المالك)' : 'Email address that will automatically receive daily sales reports (leave blank to use owner email)' }}
+                    </small>
+                    @error('report_email')
+                        <small style="color: var(--danger-color);">{{ $message }}</small>
+                    @enderror
+                </div>
+
                 <!-- Owner Password -->
                 <div class="form-group">
                     <label class="form-label">{{ app()->getLocale() === 'ar' ? 'كلمة مرور حساب المالك' : 'Owner Password' }}</label>
@@ -289,6 +302,15 @@
                     <input type="email" name="owner_email" id="edit_tenant_owner_email" class="form-control" required style="text-align: ltr;">
                 </div>
 
+                <!-- Report Email -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني لاستلام التقارير' : 'Report Email Address' }}</label>
+                    <input type="email" name="report_email" id="edit_tenant_report_email" class="form-control" style="text-align: ltr;">
+                    <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                        {{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني الذي ستُرسل إليه تقارير المبيعات اليومية تلقائياً (اتركه فارغاً للاستلام على بريد المالك)' : 'Email address that will automatically receive daily sales reports (leave blank to use owner email)' }}
+                    </small>
+                </div>
+
                 <!-- Custom Logo Upload -->
                 <div class="form-group">
                     <label class="form-label">{{ app()->getLocale() === 'ar' ? 'شعار المتجر (Logo)' : 'Store Logo Image' }}</label>
@@ -331,6 +353,7 @@
                 const slug = btn.getAttribute('data-slug');
                 const storeType = btn.getAttribute('data-store-type');
                 const ownerEmail = btn.getAttribute('data-owner-email');
+                const reportEmail = btn.getAttribute('data-report-email');
                 const logoUrl = btn.getAttribute('data-logo');
 
                 // Populate values
@@ -338,6 +361,7 @@
                 document.getElementById('edit_tenant_slug').value = slug;
                 document.getElementById('edit_tenant_store_type').value = storeType;
                 document.getElementById('edit_tenant_owner_email').value = ownerEmail;
+                document.getElementById('edit_tenant_report_email').value = reportEmail;
 
                 // Preview current logo if exists
                 const previewImg = document.getElementById('edit_tenant_logo_preview');

@@ -99,7 +99,10 @@ class SendDailySalesReport extends Command
         ];
 
         // Send Email
-        $ownerEmail = env('OWNER_EMAIL', 'owner@example.com');
+        $activeTenant = app()->has('activeTenant') ? app('activeTenant') : null;
+        $ownerEmail = ($activeTenant && isset($activeTenant->settings['report_email']) && $activeTenant->settings['report_email'])
+            ? $activeTenant->settings['report_email']
+            : ($activeTenant ? $activeTenant->owner_email : env('OWNER_EMAIL', 'owner@example.com'));
         
         $this->info("Sending report email to: {$ownerEmail}");
         

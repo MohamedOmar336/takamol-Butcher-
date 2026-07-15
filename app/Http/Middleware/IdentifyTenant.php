@@ -59,6 +59,9 @@ class IdentifyTenant
 
             // Share the tenant info globally in views
             view()->share('activeTenant', $tenant);
+
+            // Bind active tenant in container
+            app()->instance('activeTenant', $tenant);
         }
 
         return $next($request);

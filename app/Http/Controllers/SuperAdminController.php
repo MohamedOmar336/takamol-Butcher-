@@ -126,6 +126,7 @@ class SuperAdminController extends Controller
             'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general',
             'owner_name' => 'required|string|max:255',
             'owner_email' => 'required|email|max:255',
+            'report_email' => 'nullable|email|max:255',
             'password' => 'required|string|min:6',
         ], [
             'slug.unique' => 'This store slug is already taken / اسم المتجر هذا محجوز بالفعل',
@@ -153,6 +154,7 @@ class SuperAdminController extends Controller
             'settings' => [
                 'currency' => 'EGP',
                 'language' => app()->getLocale(),
+                'report_email' => $request->report_email,
             ],
         ]);
 
@@ -236,8 +238,14 @@ class SuperAdminController extends Controller
             'name' => 'required|string|max:255',
             'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general',
             'owner_email' => 'required|email|max:255',
+            'report_email' => 'nullable|email|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Save report_email to settings
+        $settings = $tenant->settings ?? [];
+        $settings['report_email'] = $request->report_email;
+        $tenant->settings = $settings;
 
         // 1. Update tenant owner email inside tenant DB if changed
         if ($tenant->owner_email !== $request->owner_email) {

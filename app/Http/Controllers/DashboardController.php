@@ -345,7 +345,10 @@ class DashboardController extends Controller
                 })->toArray()
             ];
 
-            $ownerEmail = env('OWNER_EMAIL', 'owner@example.com');
+            $activeTenant = app()->has('activeTenant') ? app('activeTenant') : null;
+            $ownerEmail = ($activeTenant && isset($activeTenant->settings['report_email']) && $activeTenant->settings['report_email'])
+                ? $activeTenant->settings['report_email']
+                : ($activeTenant ? $activeTenant->owner_email : env('OWNER_EMAIL', 'owner@example.com'));
             \Illuminate\Support\Facades\Mail::to($ownerEmail)->send(new \App\Mail\RangeSalesReportMail($stats));
 
             return redirect()->back()->with('success', 
