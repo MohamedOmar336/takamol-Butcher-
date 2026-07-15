@@ -1,3 +1,8 @@
+@php
+    $tenantLogo = (isset($activeTenant) && isset($activeTenant->settings['logo'])) 
+        ? asset($activeTenant->settings['logo']) 
+        : asset('images/logo.jpg');
+@endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
@@ -122,7 +127,7 @@
 <body>
 
     <!-- Logo -->
-    <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="logo">
+    <img src="{{ $tenantLogo }}" alt="Logo" class="logo">
 
     <!-- Brand Header -->
     <div class="text-center">

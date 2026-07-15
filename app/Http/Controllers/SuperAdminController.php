@@ -226,4 +226,75 @@ class SuperAdminController extends Controller
         $message = $tenant->status === 'active' ? 'Store activated! / تم تفعيل المتجر!' : 'Store suspended! / تم إيقاف المتجر!';
         return redirect()->route('super_admin.dashboard')->with('success', $message);
     }
+
+    /**
+     * Update an existing Tenant's details and custom logo.
+     */
+    public function updateTenant(Request $request, Tenant $tenant)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general',
+            'owner_email' => 'required|email|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // 1. Update tenant owner email inside tenant DB if changed
+        if ($tenant->owner_email !== $request->owner_email) {
+            $originalDb = config('database.connections.sqlite.database');
+            $dbPath = database_path("tenants/{$tenant->db_name}");
+            
+            if (file_exists($dbPath)) {
+                config(['database.connections.sqlite.database' => $dbPath]);
+                DB::purge('sqlite');
+                DB::reconnect('sqlite');
+                
+                // Find and update tenant owner admin email
+                $owner = User::where('email', $tenant->owner_email)->first();
+                if ($owner) {
+                    $owner->update(['email' => $request->owner_email]);
+                }
+                
+                config(['database.connections.sqlite.database' => $originalDb]);
+                DB::purge('sqlite');
+                DB::reconnect('sqlite');
+            }
+            
+            $tenant->owner_email = $request->owner_email;
+        }
+
+        // 2. Handle logo file upload
+        if ($request->hasFile('logo')) {
+            $logoFile = $request->file('logo');
+            $filename = 'logo_' . $tenant->slug . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
+            
+            // Ensure logo directory exists
+            $logoDir = public_path('uploads/logos');
+            if (!File::isDirectory($logoDir)) {
+                File::makeDirectory($logoDir, 0755, true);
+            }
+            
+            // Delete old logo file if it exists
+            $settings = $tenant->settings ?? [];
+            if (isset($settings['logo'])) {
+                $oldPath = public_path($settings['logo']);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
+            }
+            
+            // Move new logo file to public path
+            $logoFile->move($logoDir, $filename);
+            
+            // Save relative logo path to settings
+            $settings['logo'] = 'uploads/logos/' . $filename;
+            $tenant->settings = $settings;
+        }
+
+        $tenant->name = $request->name;
+        $tenant->store_type = $request->store_type;
+        $tenant->save();
+
+        return redirect()->route('super_admin.dashboard')->with('success', 'Store details updated successfully! / تم تحديث بيانات المتجر بنجاح!');
+    }
 }

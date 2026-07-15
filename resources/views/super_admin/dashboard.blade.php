@@ -122,8 +122,17 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <!-- Toggle Status Button -->
-                                    <td style="padding: 15px 10px; text-align: center;">
+                                    <!-- Actions -->
+                                    <td style="padding: 15px 10px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                        <button type="button" class="btn btn-secondary btn-edit-tenant" style="padding: 6px 12px; font-size: 0.8rem;"
+                                                data-id="{{ $tenant->id }}"
+                                                data-name="{{ $tenant->name }}"
+                                                data-slug="{{ $tenant->slug }}"
+                                                data-store-type="{{ $tenant->store_type }}"
+                                                data-owner-email="{{ $tenant->owner_email }}"
+                                                data-logo="{{ isset($tenant->settings['logo']) ? asset($tenant->settings['logo']) : '' }}">
+                                            ✏️ {{ app()->getLocale() === 'ar' ? 'تعديل' : 'Edit' }}
+                                        </button>
                                         <form action="/super-admin/tenants/{{ $tenant->id }}/toggle-status" method="POST" style="display: inline;">
                                             @csrf
                                             @if($tenant->status === 'active')
@@ -239,4 +248,120 @@
 
     </div>
 </div>
+
+<!-- Modal: Edit Store -->
+<div class="modal-backdrop" id="editTenantModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span>{{ app()->getLocale() === 'ar' ? 'تعديل بيانات المتجر' : 'Edit Store Details' }}</span>
+            <button class="modal-close" id="btnCloseEditTenantModal">×</button>
+        </div>
+        <form id="editTenantForm" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-body">
+                <!-- Store Name -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'اسم المحل / المتجر' : 'Store/Shop Name' }}</label>
+                    <input type="text" name="name" id="edit_tenant_name" class="form-control" required>
+                </div>
+
+                <!-- Subdomain Slug (Read Only) -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'رابط المتجر (لا يمكن تعديله)' : 'Subdomain Slug (Read-only)' }}</label>
+                    <input type="text" id="edit_tenant_slug" class="form-control" readonly style="background-color: var(--bg-primary); text-align: ltr;">
+                </div>
+
+                <!-- Store Preset Type -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'نوع النشاط (التهيئة المسبقة)' : 'Business Type Preset' }}</label>
+                    <select name="store_type" id="edit_tenant_store_type" class="form-control" required style="height: 46px; padding: 10px;">
+                        <option value="butcher">🥩 {{ app()->getLocale() === 'ar' ? 'محل جزارة (يدعم الموازين)' : 'Butcher Shop (Weight scale active)' }}</option>
+                        <option value="supermarket">🛒 {{ app()->getLocale() === 'ar' ? 'سوبر ماركت (يدعم الموازين والقطع)' : 'Supermarket (Scale + piece active)' }}</option>
+                        <option value="clothing">👕 {{ app()->getLocale() === 'ar' ? 'محل ملابس (بيع بالقطعة فقط)' : 'Clothing Store (Piece only, scale inactive)' }}</option>
+                        <option value="shoes">👟 {{ app()->getLocale() === 'ar' ? 'محل أحذية (بيع بالقطعة فقط)' : 'Shoe Store (Piece only, scale inactive)' }}</option>
+                        <option value="general">💼 {{ app()->getLocale() === 'ar' ? 'نشاط تجاري عام' : 'General Business (Standard POS)' }}</option>
+                    </select>
+                </div>
+
+                <!-- Owner Email -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'البريد الإلكتروني للمالك' : 'Owner Email Address' }}</label>
+                    <input type="email" name="owner_email" id="edit_tenant_owner_email" class="form-control" required style="text-align: ltr;">
+                </div>
+
+                <!-- Custom Logo Upload -->
+                <div class="form-group">
+                    <label class="form-label">{{ app()->getLocale() === 'ar' ? 'شعار المتجر (Logo)' : 'Store Logo Image' }}</label>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <div style="flex-grow: 1;">
+                            <input type="file" name="logo" class="form-control" accept="image/*">
+                            <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                                {{ app()->getLocale() === 'ar' ? 'صورة شعار مخصصة (تظهر كشعار لوحة البيع، الفواتير، وأيقونة الموقع)' : 'Custom image for POS headers, invoice thermal receipts, and favicon.' }}
+                            </small>
+                        </div>
+                        <div id="edit_tenant_logo_preview_container" style="display: none;">
+                            <img id="edit_tenant_logo_preview" src="" alt="Preview" style="height: 50px; width: 50px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border-color); background-color: white;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCancelEditTenantModal">{{ app()->getLocale() === 'ar' ? 'إلغاء' : 'Cancel' }}</button>
+                <button type="submit" class="btn btn-primary">{{ app()->getLocale() === 'ar' ? 'حفظ التعديلات' : 'Save Changes' }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Edit Store Modal logic
+        const editTenantModal = document.getElementById('editTenantModal');
+        const editTenantForm = document.getElementById('editTenantForm');
+        const btnCloseEditTenantModal = document.getElementById('btnCloseEditTenantModal');
+        const btnCancelEditTenantModal = document.getElementById('btnCancelEditTenantModal');
+        
+        const editTenantBtns = document.querySelectorAll('.btn-edit-tenant');
+        editTenantBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const name = btn.getAttribute('data-name');
+                const slug = btn.getAttribute('data-slug');
+                const storeType = btn.getAttribute('data-store-type');
+                const ownerEmail = btn.getAttribute('data-owner-email');
+                const logoUrl = btn.getAttribute('data-logo');
+
+                // Populate values
+                document.getElementById('edit_tenant_name').value = name;
+                document.getElementById('edit_tenant_slug').value = slug;
+                document.getElementById('edit_tenant_store_type').value = storeType;
+                document.getElementById('edit_tenant_owner_email').value = ownerEmail;
+
+                // Preview current logo if exists
+                const previewImg = document.getElementById('edit_tenant_logo_preview');
+                const previewContainer = document.getElementById('edit_tenant_logo_preview_container');
+                if (logoUrl) {
+                    previewImg.src = logoUrl;
+                    previewContainer.style.display = 'block';
+                } else {
+                    previewContainer.style.display = 'none';
+                }
+
+                // Set Form action endpoint
+                editTenantForm.action = `/super-admin/tenants/${id}`;
+
+                editTenantModal.classList.add('active');
+            });
+        });
+
+        btnCloseEditTenantModal.addEventListener('click', closeEditTenantModal);
+        btnCancelEditTenantModal.addEventListener('click', closeEditTenantModal);
+
+        function closeEditTenantModal() {
+            editTenantModal.classList.remove('active');
+        }
+    });
+</script>
 @endsection

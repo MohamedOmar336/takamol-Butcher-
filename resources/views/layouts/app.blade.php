@@ -1,3 +1,8 @@
+@php
+    $tenantLogo = (isset($activeTenant) && isset($activeTenant->settings['logo'])) 
+        ? asset($activeTenant->settings['logo']) 
+        : asset('images/logo.jpg');
+@endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" data-theme="light">
 <head>
@@ -7,7 +12,7 @@
     <title>@yield('title') | {{ $activeTenant->name ?? __('messages.app_name') }}</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ $tenantLogo }}">
     
     <!-- Inline script to prevent theme flashing -->
     <script>
@@ -25,7 +30,7 @@
         <!-- Sidebar Navigation -->
         <aside class="app-sidebar">
             <div class="brand" style="position: relative; width: 100%;">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
+                <img src="{{ $tenantLogo }}" alt="Logo">
                 <span class="brand-name">{{ $activeTenant->name ?? __('messages.app_name') }}</span>
                 <!-- Mobile close button -->
                 <button id="sidebarClose" class="mobile-close-btn" style="display: none; position: absolute; top: -5px; left: -5px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-secondary);" title="Close Sidebar">✕</button>

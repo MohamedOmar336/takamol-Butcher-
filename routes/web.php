@@ -26,6 +26,7 @@ Route::domain($centralDomain)->group(function () {
             Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('super_admin.dashboard');
             Route::post('/tenants', [SuperAdminController::class, 'storeTenant'])->name('super_admin.tenants.store');
             Route::post('/tenants/{tenant}/toggle-status', [SuperAdminController::class, 'toggleTenantStatus'])->name('super_admin.tenants.toggle');
+            Route::post('/tenants/{tenant}', [SuperAdminController::class, 'updateTenant'])->name('super_admin.tenants.update');
         });
     });
 });
