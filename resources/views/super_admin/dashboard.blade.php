@@ -71,10 +71,10 @@
                                         @php
                                             $centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost';
                                             $port = parse_url(config('app.url'), PHP_URL_PORT) ?? request()->getPort();
-                                            $url = "http://{$tenant->slug}.localhost" . ($port ? ":{$port}" : "") . "/login";
+                                            $url = "http://{$tenant->slug}.{$centralDomain}" . ($port ? ":{$port}" : "") . "/login";
                                         @endphp
                                         <a href="{{ $url }}" target="_blank" style="color: var(--accent-color); text-decoration: underline; font-weight: 600;">
-                                            {{ $tenant->slug }}.localhost
+                                            {{ $tenant->slug }}.{{ $centralDomain }}
                                         </a>
                                     </td>
                                     <!-- Store Type Badge -->

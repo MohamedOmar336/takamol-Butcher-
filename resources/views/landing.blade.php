@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dukkan SAAS POS | دكان</title>
+    <title>DokkanHub SAAS POS | دكان هب</title>
     
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}">
@@ -144,7 +144,7 @@
         <header class="landing-header">
             <div class="landing-brand">
                 <img src="{{ asset('images/logo.jpg') }}" alt="Dukkan Logo" onerror="this.src='https://placehold.co/40x40/0d9488/fff?text=D'">
-                <span>{{ app()->getLocale() === 'ar' ? 'منصة دكان' : 'Dukkan Platform' }}</span>
+                <span>{{ app()->getLocale() === 'ar' ? 'منصة دكان هب' : 'DokkanHub Platform' }}</span>
             </div>
             
             <div class="header-controls">
@@ -164,9 +164,9 @@
         <section class="hero-section">
             <h1 class="hero-title">
                 @if(app()->getLocale() === 'ar')
-                    أدر تجارتك بذكاء مع <span>دكان</span>
+                    أدر تجارتك بذكاء مع <span>دكان هب</span>
                 @else
-                    Manage Your Business Smartly with <span>Dukkan</span>
+                    Manage Your Business Smartly with <span>DokkanHub</span>
                 @endif
             </h1>
             <p class="hero-subtitle">
@@ -196,7 +196,7 @@
                         <label class="form-label">{{ app()->getLocale() === 'ar' ? 'اسم المتجر (الرابط الفرعي)' : 'Store Name (Subdomain Slug)' }}</label>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <input type="text" name="slug" class="form-control" placeholder="e.g. takamul" required value="{{ old('slug') }}" style="text-align: ltr;">
-                            <span style="font-weight: 600; color: var(--text-secondary);">.localhost</span>
+                            <span style="font-weight: 600; color: var(--text-secondary);">.{{ parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost' }}</span>
                         </div>
                         <small style="color: var(--text-secondary); margin-top: 5px; display: block;">
                             {{ app()->getLocale() === 'ar' ? 'أدخل اسم متجرك للانتقال لصفحة الكاشير الخاصة بك.' : 'Enter your store name to access your specific POS terminal.' }}
@@ -237,7 +237,7 @@
         <!-- Footer -->
         <footer class="landing-footer">
             <p>
-                © 2026 Dukkan POS SAAS. {{ app()->getLocale() === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.' }}
+                © 2026 DokkanHub POS SAAS. {{ app()->getLocale() === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.' }}
                 | 
                 <a href="{{ route('super_admin.login') }}">{{ app()->getLocale() === 'ar' ? 'لوحة تحكم المدير العام' : 'Super Admin Portal' }}</a>
             </p>
