@@ -16,9 +16,11 @@ class POSController extends Controller
 {
     public function index()
     {
-        $categories = Category::with(['products' => function($q) {
-            $q->where('is_active', true);
-        }])->get();
+        $categories = Category::with([
+            'products' => function ($q) {
+                $q->where('is_active', true);
+            }
+        ])->get();
 
         // All active products for direct lookup/search
         $products = Product::where('is_active', true)->get();
@@ -29,7 +31,8 @@ class POSController extends Controller
     public function searchCustomer(Request $request)
     {
         $q = $request->get('q');
-        if (!$q) return response()->json([]);
+        if (!$q)
+            return response()->json([]);
 
         $customers = Customer::where('phone', 'like', "%{$q}%")
             ->orWhere('name', 'like', "%{$q}%")
@@ -71,7 +74,7 @@ class POSController extends Controller
         }
 
         // 1. Try to parse as a scale barcode (Only for butcher and supermarket)
-        $activeTenant = view()->shared('activeTenant');
+        $activeTenant = view()->shared('activeTenant') ?: (app()->has('activeTenant') ? app('activeTenant') : null);
         $isWeightScaleActive = $activeTenant && in_array($activeTenant->store_type, ['butcher', 'supermarket']);
 
         if ($isWeightScaleActive) {
@@ -99,14 +102,14 @@ class POSController extends Controller
                         ]);
                     }
 
-                    $calculatedPrice = round($payload->weight * (float)$product->price, 2);
+                    $calculatedPrice = round($payload->weight * (float) $product->price, 2);
                     return response()->json([
                         'success' => true,
                         'product' => [
                             'id' => $product->id,
                             'sku' => $product->sku,
                             'name' => $product->name,
-                            'price' => (float)$product->price,
+                            'price' => (float) $product->price,
                             'pricing_type' => $product->pricing_type,
                         ],
                         'scanned_weight' => $payload->weight,
@@ -139,11 +142,11 @@ class POSController extends Controller
                         'id' => $product->id,
                         'sku' => $product->sku,
                         'name' => $product->name,
-                        'price' => (float)$product->price,
+                        'price' => (float) $product->price,
                         'pricing_type' => $product->pricing_type,
                     ],
                     'scanned_weight' => 1.000,
-                    'scanned_price' => (float)$product->price
+                    'scanned_price' => (float) $product->price
                 ]);
             } else {
                 // Weighed product scanned via standard barcode: needs manual weight entry
@@ -154,7 +157,7 @@ class POSController extends Controller
                         'id' => $product->id,
                         'sku' => $product->sku,
                         'name' => $product->name,
-                        'price' => (float)$product->price,
+                        'price' => (float) $product->price,
                         'pricing_type' => $product->pricing_type,
                     ]
                 ]);
@@ -171,14 +174,28 @@ class POSController extends Controller
 
     public function checkout(Request $request)
     {
-        $validated = $request->validate([
-            'payment_method' => 'required|in:cash,card,credit',
-            'discount_amount' => 'nullable|numeric|min:0',
-            'customer_id' => 'nullable|exists:customers,id',
-            'cart' => 'required|array|min:1',
-            'cart.*.product_id' => 'required|exists:products,id',
-            'cart.*.quantity' => 'required|numeric|min:0.001',
-        ]);
+        // dd($request->all());
+        if (!$request->filled('customer_id') || (int) $request->customer_id === 0) {
+            $request->merge(['customer_id' => null]);
+        }
+
+        try {
+            $validated = $request->validate([
+                'payment_method' => 'required|in:cash,card,credit',
+                'discount_amount' => 'nullable|numeric|min:0',
+                'customer_id' => 'nullable|exists:customers,id',
+                'cart' => 'required|array|min:1',
+                'cart.*.product_id' => 'required|exists:products,id',
+                'cart.*.quantity' => 'required|numeric|min:0.001',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $firstError = collect($e->errors())->flatten()->first();
+            return response()->json([
+                'success' => false,
+                'message' => $firstError ?? (app()->getLocale() === 'ar' ? 'بيانات غير صالحة' : 'Invalid data provided.'),
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         $cart = $validated['cart'];
         $paymentMethod = $validated['payment_method'];
@@ -211,18 +228,18 @@ class POSController extends Controller
                     if ($product->stock < $qty) {
                         throw new \Exception(
                             app()->getLocale() === 'ar'
-                                ? "الكمية المطلوبة للمنتج ({$product->name}) غير متوفرة. المتاح حالياً: {$product->stock}"
-                                : "Insufficient stock for product ({$product->name}). Current stock: {$product->stock}"
+                            ? "الكمية المطلوبة للمنتج ({$product->name}) غير متوفرة. المتاح حالياً: {$product->stock}"
+                            : "Insufficient stock for product ({$product->name}). Current stock: {$product->stock}"
                         );
                     }
 
-                    $subtotal = round($qty * (float)$product->price, 2);
+                    $subtotal = round($qty * (float) $product->price, 2);
                     $totalAmount += $subtotal;
 
                     $itemsToCreate[] = [
                         'product_id' => $product->id,
                         'quantity' => $qty,
-                        'unit_price' => (float)$product->price,
+                        'unit_price' => (float) $product->price,
                         'subtotal' => $subtotal
                     ];
 
@@ -241,14 +258,15 @@ class POSController extends Controller
                     if ($newBalance > floatval($customer->credit_limit)) {
                         throw new \Exception(
                             app()->getLocale() === 'ar'
-                                ? "لقد تجاوز العميل الحد الائتماني المسموح به. الحد الحالي: {$customer->credit_limit} ج.م.، الدين بعد هذه المعاملة: {$newBalance} ج.م."
-                                : "Customer credit limit exceeded. Current limit: {$customer->credit_limit} EGP. Total debt after this order: {$newBalance} EGP."
+                            ? "لقد تجاوز العميل الحد الائتماني المسموح به. الحد الحالي: {$customer->credit_limit} ج.م.، الدين بعد هذه المعاملة: {$newBalance} ج.م."
+                            : "Customer credit limit exceeded. Current limit: {$customer->credit_limit} EGP. Total debt after this order: {$newBalance} EGP."
                         );
                     }
                     $customer->update(['balance' => $newBalance]);
                 }
 
                 // 3. Create Order record with tenant prefix
+                $activeTenant = app()->has('activeTenant') ? app('activeTenant') : null;
                 $prefix = $activeTenant ? strtoupper(substr($activeTenant->slug, 0, 4)) : 'DKN';
                 $orderNumber = $prefix . '-' . date('YmdHis') . '-' . rand(100, 999);
                 $order = Order::create([
@@ -299,11 +317,11 @@ class POSController extends Controller
     {
         try {
             \Illuminate\Support\Facades\Artisan::call('app:send-daily-sales-report');
-            
+
             return response()->json([
                 'success' => true,
-                'message' => app()->getLocale() === 'ar' 
-                    ? 'تم إرسال التقرير اليومي للمبيعات إلى بريد المالك بنجاح.' 
+                'message' => app()->getLocale() === 'ar'
+                    ? 'تم إرسال التقرير اليومي للمبيعات إلى بريد المالك بنجاح.'
                     : 'Daily sales report sent to the owner\'s email successfully.'
             ]);
         } catch (\Exception $e) {

@@ -16,7 +16,7 @@ class MultiTenancyTest extends TestCase
     {
         $response = $this->get('http://localhost/');
         $response->assertStatus(200);
-        $response->assertSee('Dukkan');
+        $response->assertSee('DokkanHub');
     }
 
     /**

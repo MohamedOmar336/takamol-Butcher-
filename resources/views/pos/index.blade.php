@@ -838,7 +838,14 @@
 
                 alert(data.message);
             } else {
-                alert(data.message || 'Checkout failed');
+                let errorMsg = data.message;
+                if (data.errors) {
+                    const firstKey = Object.keys(data.errors)[0];
+                    if (firstKey && data.errors[firstKey][0]) {
+                        errorMsg = data.errors[firstKey][0];
+                    }
+                }
+                alert(errorMsg || 'Checkout failed');
             }
         })
         .catch(err => {
