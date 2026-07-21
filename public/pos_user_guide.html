@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل استخدام كاشير دكان هب (DokkanHub) | الدليل المبسط</title>
+    <link rel="shortcut icon" type="image/jpeg" href="/images/logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #e11a22;
+            --red-dark: #b50f16;
+            --red-light: #fef2f2;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-gray: #f8fafc;
+            --border: #e2e8f0;
+            --gold: #f59e0b;
+            --success: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            line-height: 1.8;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .no-print-bar {
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-print {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-print:hover { background: var(--red-dark); }
+
+        .guide-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* Cover Page */
+        .cover {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #881337 100%);
+            color: #fff;
+            padding: 70px 40px 60px;
+            text-align: center;
+            position: relative;
+        }
+        .cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 6px;
+            background: var(--red);
+        }
+        .cover-logo {
+            height: 70px;
+            margin-bottom: 25px;
+            background: #fff;
+            padding: 10px 25px;
+            border-radius: 16px;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .cover-badge {
+            display: inline-block;
+            background: rgba(225, 26, 34, 0.2);
+            border: 1px solid var(--red);
+            color: #ff8888;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .cover-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        .cover-sub {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            max-width: 650px;
+            margin: 0 auto 30px;
+            font-weight: 600;
+        }
+        .cover-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            color: #94a3b8;
+        }
+
+        /* Intro Section */
+        .intro-box {
+            background: var(--red-light);
+            border: 2px dashed rgba(225, 26, 34, 0.3);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin: 35px 40px;
+            position: relative;
+        }
+        .intro-title {
+            color: var(--red);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .intro-text {
+            font-size: 1.05rem;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        /* Chapter Section */
+        .chapter {
+            padding: 35px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+        .chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .chapter-num {
+            width: 48px;
+            height: 48px;
+            background: var(--red);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px var(--red-glow);
+        }
+        .chapter-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+        .chapter-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .step-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 18px 0;
+        }
+        .step-item {
+            background: var(--bg-gray);
+            border: 1px solid var(--border);
+            padding: 14px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .step-item .icon {
+            color: var(--red);
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        /* Highlights & Alerts */
+        .alert-box {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-weight: 600;
+            font-size: 0.98rem;
+        }
+        .alert-box.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+        .alert-box.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .alert-box.success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+
+        /* Credentials Box */
+        .cred-card {
+            background: #0f172a;
+            color: #fff;
+            border-radius: 14px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .cred-item { font-family: 'Outfit', sans-serif; text-align: center; }
+        .cred-label { font-size: 0.8rem; color: #94a3b8; font-family: 'Cairo', sans-serif; }
+        .cred-val { font-weight: 700; font-size: 1.1rem; color: #f8fafc; }
+
+        /* Responsive & Print Rules */
+        @media print {
+            .no-print-bar { display: none !important; }
+            body { background: #fff; }
+            .guide-container { box-shadow: none; border: none; margin: 0; max-width: 100%; border-radius: 0; }
+            .chapter { page-break-inside: avoid; }
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 30px;
+            background: var(--bg-gray);
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .footer-note a { color: var(--red); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="no-print-bar">
+    <div><strong>دليل كاشير دكان هب الرسمى 🇪🇬</strong> — جاهز للطباعة أو الحفظ كـ PDF</div>
+    <button class="btn-print" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+</div>
+
+<div class="guide-container">
+
+    <!-- COVER -->
+    <div class="cover">
+        <div>
+            <img src="/images/logo.jpg" alt="DokkanHub Logo" class="cover-logo">
+        </div>
+        <div class="cover-badge">سيستم كاشير دكان هب (DokkanHub) 🛒</div>
+        <h1 class="cover-title">دليل المستخدم المبسط للكاشير</h1>
+        <p class="cover-sub">دليلك السريع لإدارة عمليات البيع، حسابات المحل، الشكك، والديون بسهولة وبدون أي تعقيد</p>
+
+        <div class="cover-footer">
+            <span>النسخة: 2.0 (محدثة بالكامل)</span>
+            <span>تاريخ الإصدار: 2026</span>
+        </div>
+    </div>
+
+    <!-- INTRO -->
+    <div class="intro-box">
+        <div class="intro-title">✨ يا هلا بيك في سيستم دكان هب!</div>
+        <div class="intro-text">
+            يا هلا بيك يا فنان! السيستم ده معمول مخصوص عشان يريحك ويسهل عليك إدارة المحل والكاشير والبيع، وتتابع حسابات الزباين والشكك والميزان أول بأول وأنت مغمض عينيك.<br><br>
+            الدليل ده مكتوب <strong>بالبلدي الفصيح وبكل بساطة</strong> عشان يوضحلك إزاي تتعامل مع شاشة البيع وتنجز شغلك في ثواني بدون أي تعقيد. يلا بينا نبدأ! 🚀
+        </div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">1</div>
+            <div>
+                <h2 class="chapter-title">تسجيل الدخول للنظام (Login)</h2>
+                <p class="chapter-subtitle">أول خطوة لفتح حسابك والبدء في البيع</p>
+            </div>
+        </div>
+        <p>أول ما تفتح رابط متجرك، هتظهرلك صفحة تسجيل الدخول عشان تحافظ على أمان بياناتك وحسابات محلك:</p>
+        <ul class="step-list">
+            <li class="step-item"><span class="icon">✓</span> <span>اكتب <strong>البريد الإلكتروني (Email)</strong> الخاص بحسابك على دكان هب.</span></li>
+            <li class="step-item"><span class="icon">✓</span> <span>اكتب <strong>كلمة السر (Password)</strong> بشكل صحيح.</span></li>
+            <li class="step-item"><span class="icon">✓</span> <span>اضغط على زرار <strong>تسجيل الدخول (Login)</strong> للوصول للنظام.</span></li>
+        </ul>
+
+        <div class="alert-box info">
+            💡 <strong>ملاحظة هامة:</strong> لكل كاشير أو مدير حساب خاص بيه وسرية تامة لمتابعة حركة البيع بشكل منفصل.
+        </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">2</div>
+            <div>
+                <h2 class="chapter-title">لوحة التحكم الرئيسية (Dashboard)</h2>
+                <p class="chapter-subtitle">نظرة عامة وشاملة على أداء المحل والمبيعات</p>
+            </div>
+        </div>
+        <p>بعد ما بتسجل دخولك بنجاح كأدمن أو مدير، بتدخل على لوحة التحكم العامة للمحل:</p>
+        <ul class="step-list">
+            <li class="step-item"><span class="icon">📊</span> <span><strong>العدادات السريعة:</strong> بتعرضلك مبيعات النهاردة كام جنيه، عدد الفواتير اللي اتعملت، وتنبيهات المنتجات اللي قربت تخلص عشان تطلبها بدري.</span></li>
+            <li class="step-item"><span class="icon">📈</span> <span><strong>الرسم البياني:</strong> بيوريك مبيعات الأسبوع طالعة ونازلة إزاي عشان تتابع حركة السوق والإقبال.</span></li>
+            <li class="step-item"><span class="icon">🧾</span> <span><strong>جدول أحدث الفواتير:</strong> بيعرضلك عمليات البيع اللي تمت في المحل وتفاصيل كل فاتورة.</span></li>
+        </ul>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">3</div>
+            <div>
+                <h2 class="chapter-title">شاشة نقطة البيع (POS) - شاشة الكاشير</h2>
+                <p class="chapter-subtitle">الشاشة الرئيسية اللي بتقضي عليها يومك وتطلع منها الفواتير</p>
+            </div>
+        </div>
+        <p>متقسمة بطريقة منظمة وسريعة جداً وتدعم شاشات اللمس والموبايل والكمبيوتر:</p>
+        <ul class="step-list">
+            <li class="step-item"><span class="icon">👈</span> <span><strong>الناحية الشمال (كروت المنتجات):</strong> فيها كل الأصناف والأقسام متقسمة لتبويبات لسهولة الوصول للمنتج.</span></li>
+            <li class="step-item"><span class="icon">👉</span> <span><strong>الناحية اليمين (سلة المشتريات):</strong> بينزل فيها المنتجات اللي الزبون اختارها مع الإجمالي فوراً.</span></li>
+            <li class="step-item"><span class="icon">👤</span> <span><strong>بيانات العميل والدفع:</strong> تقدر تختار زبون مسجل أو تضيف زبون جديد، وتحدد طريقة الدفع (كاش، فيزا، أو شكك آجل).</span></li>
+        </ul>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">4</div>
+            <div>
+                <h2 class="chapter-title">إزاي تبيع بالوزن أو بالقطعة؟ ⚖️</h2>
+                <p class="chapter-subtitle">دكان هب بيتعامل مع الأوزان والقطعيات بذكاء شديد</p>
+            </div>
+        </div>
+        <ul class="step-list">
+            <li class="step-item"><span class="icon">📦</span> <span><strong>المنتجات بالقطعة (زي الجاهز أو المعلبات):</strong> اضغط على كارت المنتج، هينزل في السلة فوراً بالعدد (1 قطعة)، وتقدر تزود أو تقلل بالضغط على (+ و -).</span></li>
+            <li class="step-item"><span class="icon">⚖️</span> <span><strong>المنتجات بالوزن (زي اللحوم والأصناف الموزونة):</strong> لما بتضغط على كارت المنتج، بيظهرلك شباك يسألك: <em>"الوزن كام كجم؟"</em>. بتكتب الوزن بالظبط (مثلاً 0.805 يعني 805 جرام، أو 1.500 يعني كيلو ونص) وتدوس إضافة، هينزل في السلة محسوب فوراً بناءً على سعر الكيلو.</span></li>
+        </ul>
+
+        <div class="alert-box warning">
+            📝 <strong>البيع بالآجل (الشكك):</strong> لو اخترت زبون، واخترت الدفع "شكك"، السيستم هيتأكد من <strong>الحد الائتماني</strong> للزبون. لو مسموح له بالدين هيسجل الفاتورة ويزود حسابه تلقائياً. لو هيعدي الحد، السيستم هيمنعك ويطلع تنبيه عشان تضمن فلوسك!
+        </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">5</div>
+            <div>
+                <h2 class="chapter-title">ربط الميزان الإلكتروني (TM-A Barcode) 🏷️</h2>
+                <p class="chapter-subtitle">اضرب الاستيكر بمسدس الباركود ينزل الوزن والسعر في ثانية واحدة</p>
+            </div>
+        </div>
+        <p>لو عندك ميزان باركود بيطبع استيكرات، سيستم دكان هب بيفهم الاستيكر ده أوتوماتيكياً بمجرد ما تضرب الباركود بالاسكانر!</p>
+        <p style="margin-top: 10px;">السيستم فيه مترجم بيقرا كود الصنف والوزن من الباركود (EAN-13)، ويزنله في السلة بالوزن الفعلي وسعر الكيلو في ثانية واحدة وبدون أي تدخل يدوي.</p>
+        
+        <div class="alert-box success">
+            🛠️ <strong>إزاي تجرب الميزان؟</strong> ادخل على صفحة <strong>محاكي الميزان</strong> من المنيو الجانبية، واختار الصنف واكتب الوزن واضغط <strong>"توليد الباركود"</strong>. انسخ الكود واعمله لصق في خانة البحث بالكاشير كأنك ضربته بالاسكانر وشوف السحر!
+        </div>
+    </div>
+
+    <!-- CHAPTER 6 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">6</div>
+            <div>
+                <h2 class="chapter-title">إدارة المنتجات واستيراد الإكسل (Products) 📦</h2>
+                <p class="chapter-subtitle">السيطرة الكاملة على المنتجات والأسعار والمخزون</p>
+            </div>
+        </div>
+        <ul class="step-list">
+            <li class="step-item"><span class="icon">➕</span> <span><strong>إضافة منتج جديد:</strong> بتكتب اسمه، وتحدد قسمه، وتكتب الباركود وسعر الشراء وسعر البيع والمخزون الحالي.</span></li>
+            <li class="step-item"><span class="icon">📊</span> <span><strong>استيراد المنتجات بالإكسل (Excel Import):</strong> لو عندك أصناف كتير، تقدر ترفع ملف إكسل فيه كل المنتجات والأسعار، ودكان هب هيقرأها ويسجلها في ثواني!</span></li>
+        </ul>
+    </div>
+
+    <!-- CHAPTER 7 -->
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-num">7</div>
+            <div>
+                <h2 class="chapter-title">إدارة العملاء وحسابات الشكك (Customers) 👥</h2>
+                <p class="chapter-subtitle">خليك عارف كل زبون ليه إيه وعليه كام بالظبط</p>
+            </div>
+        </div>
+        <ul class="step-list">
+            <li class="step-item"><span class="icon">👤</span> <span><strong>تسجيل عميل جديد:</strong> بتكتب اسمه، تليفونه، وعنوانه، وتحدد له "حد الائتمان" (مثلاً 3000 جنيه كحد أقصى للشكك).</span></li>
+            <li class="step-item"><span class="icon">💳</span> <span><strong>متابعة المديونيات:</strong> الجدول بيعرضلك رصيد حساب كل عميل (المديونية الحالية). لو باللون الأخضر يبقى مسدد، لو باللون الأحمر يبقى عليه فلوس للمحل.</span></li>
+            <li class="step-item"><span class="icon">💰</span> <span><strong>تسوية الحساب:</strong> بضغطة واحدة تقدر تسجل سداد جزء أو كل الدين للعميل، وهيخصم من مديونيته فوراً مع إصدار إيصال سداد.</span></li>
+        </ul>
+    </div>
+
+    <!-- FOOTER NOTE -->
+    <div class="footer-note">
+        جميع الحقوق محفوظة © 2026 دكان هب (DokkanHub) | دعم فني متواصل 24/7 عبر واتسآب: <a href="https://wa.me/201111847054" target="_blank">+201111847054</a>
+    </div>
+
+</div>
+
+</body>
+</html>
