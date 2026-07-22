@@ -1084,7 +1084,7 @@
     <canvas id="particles-canvas"></canvas>
 
     <!-- Floating WhatsApp -->
-    <a href="https://wa.me/201111847054" target="_blank" class="floating-wa" title="تواصل عبر واتسآب">💬</a>
+    <a href="https://wa.me/201111847065" target="_blank" class="floating-wa" title="تواصل عبر واتسآب">💬</a>
 
     <!-- Store Access Modal -->
     <div class="modal-overlay" id="storeModal">
@@ -1302,7 +1302,7 @@
                     <li id="pf1_6">إدارة العملاء والديون</li>
                     <li id="pf1_7">دعم فني متواصل</li>
                 </ul>
-                <a href="https://wa.me/201111847054?text=أهلاً، عايز أشترك في الخطة العادية 2000 جنيه" target="_blank">
+                <a href="https://wa.me/201111847065?text=أهلاً، عايز أشترك في الخطة العادية 2000 جنيه" target="_blank">
                     <button class="plan-btn plan-btn-outline" id="p1btn">ابدأ بالخطة العادية</button>
                 </a>
             </div>
@@ -1326,7 +1326,7 @@
                     <li id="pf2_6">تخصيص شعار وإعدادات المتجر</li>
                     <li id="pf2_7">تقارير متقدمة ومخصصة</li>
                 </ul>
-                <a href="https://wa.me/201111847054?text=أهلاً، عايز أشترك في خطة التوفير 10000 دفعة أولى + 2000 كل 3 أشهر"
+                <a href="https://wa.me/201111847065?text=أهلاً، عايز أشترك في خطة التوفير 10000 دفعة أولى + 2000 كل 3 أشهر"
                     target="_blank">
                     <button class="plan-btn plan-btn-solid" id="p2btn">ابدأ بخطة التوفير ⚡</button>
                 </a>
@@ -1346,7 +1346,7 @@
                 <div class="contact-info-item"><span class="icon">📞</span><span>+2 01111847054</span></div>
                 <div class="contact-info-item"><span class="icon">✉️</span><span>sales@dokkanhub.com</span></div>
             </div>
-            <a href="https://wa.me/201111847054?text=أهلاً دكان هب، عايز أعرف أكتر عن النظام" target="_blank"
+            <a href="https://wa.me/201111847065?text=أهلاً دكان هب، عايز أعرف أكتر عن النظام" target="_blank"
                 class="whatsapp-btn">
                 <span>💬</span><span id="waBtnText">ابعتلنا على واتسآب دلوقتي</span>
             </a>
