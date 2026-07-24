@@ -123,7 +123,7 @@ class SuperAdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|alpha_dash|unique:central.tenants,slug', // validate unique slug in central
-            'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general',
+            'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general,car_service',
             'owner_name' => 'required|string|max:255',
             'owner_email' => 'required|email|max:255',
             'report_email' => 'nullable|email|max:255',
@@ -236,7 +236,7 @@ class SuperAdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general',
+            'store_type' => 'required|in:butcher,supermarket,clothing,shoes,general,car_service',
             'owner_email' => 'required|email|max:255',
             'report_email' => 'nullable|email|max:255',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

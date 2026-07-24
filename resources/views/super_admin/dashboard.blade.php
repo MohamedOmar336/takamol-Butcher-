@@ -99,6 +99,11 @@
                                                     👟 {{ app()->getLocale() === 'ar' ? 'أحذية' : 'Shoes' }}
                                                 </span>
                                                 @break
+                                            @case('car_service')
+                                                <span class="badge" style="background-color: #e0f2fe; color: #0284c7; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">
+                                                    🚗 {{ app()->getLocale() === 'ar' ? 'مركز خدمة سيارات' : 'Car Service Center' }}
+                                                </span>
+                                                @break
                                             @default
                                                 <span class="badge" style="background-color: #e2e8f0; color: #475569; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">
                                                     💼 {{ app()->getLocale() === 'ar' ? 'عام' : 'General' }}
@@ -199,6 +204,7 @@
                         <option value="supermarket" {{ old('store_type') === 'supermarket' ? 'selected' : '' }}>🛒 {{ app()->getLocale() === 'ar' ? 'سوبر ماركت (يدعم الموازين والقطع)' : 'Supermarket (Scale + piece active)' }}</option>
                         <option value="clothing" {{ old('store_type') === 'clothing' ? 'selected' : '' }}>👕 {{ app()->getLocale() === 'ar' ? 'محل ملابس (بيع بالقطعة فقط)' : 'Clothing Store (Piece only, scale inactive)' }}</option>
                         <option value="shoes" {{ old('store_type') === 'shoes' ? 'selected' : '' }}>👟 {{ app()->getLocale() === 'ar' ? 'محل أحذية (بيع بالقطعة فقط)' : 'Shoe Store (Piece only, scale inactive)' }}</option>
+                        <option value="car_service" {{ old('store_type') === 'car_service' ? 'selected' : '' }}>🚗 {{ app()->getLocale() === 'ar' ? 'مركز خدمة وصيانة سيارات (أوامر شغل وفواتير A4)' : 'Car Service Center (Job Cards & A4 Invoices)' }}</option>
                         <option value="general" {{ old('store_type') === 'general' ? 'selected' : '' }}>💼 {{ app()->getLocale() === 'ar' ? 'نشاط تجاري عام' : 'General Business (Standard POS)' }}</option>
                     </select>
                     @error('store_type')
@@ -291,6 +297,7 @@
                         <option value="supermarket">🛒 {{ app()->getLocale() === 'ar' ? 'سوبر ماركت (يدعم الموازين والقطع)' : 'Supermarket (Scale + piece active)' }}</option>
                         <option value="clothing">👕 {{ app()->getLocale() === 'ar' ? 'محل ملابس (بيع بالقطعة فقط)' : 'Clothing Store (Piece only, scale inactive)' }}</option>
                         <option value="shoes">👟 {{ app()->getLocale() === 'ar' ? 'محل أحذية (بيع بالقطعة فقط)' : 'Shoe Store (Piece only, scale inactive)' }}</option>
+                        <option value="car_service">🚗 {{ app()->getLocale() === 'ar' ? 'مركز خدمة وصيانة سيارات (أوامر شغل وفواتير A4)' : 'Car Service Center (Job Cards & A4 Invoices)' }}</option>
                         <option value="general">💼 {{ app()->getLocale() === 'ar' ? 'نشاط تجاري عام' : 'General Business (Standard POS)' }}</option>
                     </select>
                 </div>
