@@ -1343,7 +1343,7 @@
             <h2 class="contact-title" id="contactTitle">خد الخطوة الأولى النهارده</h2>
             <p class="contact-sub" id="contactSub">فريقنا جاهز يساعدك تبدأ وتشغل محلك بأحدث نظام POS في مصر</p>
             <div class="contact-info">
-                <div class="contact-info-item"><span class="icon">📞</span><span>+2 01111847054</span></div>
+                <div class="contact-info-item"><span class="icon">📞</span><span>+2 01111847065</span></div>
                 <div class="contact-info-item"><span class="icon">✉️</span><span>sales@dokkanhub.com</span></div>
             </div>
             <a href="https://wa.me/201111847065?text=أهلاً دكان هب، عايز أعرف أكتر عن النظام" target="_blank"
