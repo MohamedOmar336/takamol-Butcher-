@@ -75,6 +75,16 @@ class MigrateTenants extends Command
                 '--force' => true,
             ]);
 
+            // If tenant is car_service, run Car Service workshop migrations
+            $carServiceMigrations = 'c:/xampp/htdocs/car-service-system/database/migrations';
+            if ($tenant->store_type === 'car_service' && \Illuminate\Support\Facades\File::isDirectory($carServiceMigrations)) {
+                Artisan::call('migrate', [
+                    '--database' => 'sqlite',
+                    '--path' => $carServiceMigrations,
+                    '--force' => true,
+                ]);
+            }
+
             $this->line(Artisan::output());
         }
 

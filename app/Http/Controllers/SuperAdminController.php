@@ -172,6 +172,16 @@ class SuperAdminController extends Controller
                 '--force' => true,
             ]);
 
+            // If store type is car_service, run Car Service workshop migrations
+            $carServiceMigrations = 'c:/xampp/htdocs/car-service-system/database/migrations';
+            if ($request->store_type === 'car_service' && File::isDirectory($carServiceMigrations)) {
+                Artisan::call('migrate', [
+                    '--database' => 'sqlite',
+                    '--path' => $carServiceMigrations,
+                    '--force' => true,
+                ]);
+            }
+
             // Seed tenant permissions
             $permissions = [
                 ['slug' => 'access_pos', 'name_en' => 'Access POS Terminal', 'name_ar' => 'دخول نقطة البيع'],
