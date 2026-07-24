@@ -81,6 +81,7 @@ class MigrateTenants extends Command
                 Artisan::call('migrate', [
                     '--database' => 'sqlite',
                     '--path' => $carServiceMigrations,
+                    '--realpath' => true,
                     '--force' => true,
                 ]);
             }

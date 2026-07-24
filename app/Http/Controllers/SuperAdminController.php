@@ -178,6 +178,7 @@ class SuperAdminController extends Controller
                 Artisan::call('migrate', [
                     '--database' => 'sqlite',
                     '--path' => $carServiceMigrations,
+                    '--realpath' => true,
                     '--force' => true,
                 ]);
             }
