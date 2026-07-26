@@ -553,10 +553,10 @@
 
         /* ==================== PRICING ==================== */
         .pricing-grid {
-            max-width: 900px;
+            max-width: 450px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: 1fr;
             gap: 28px;
         }
 
@@ -1167,7 +1167,7 @@
                 <span class="stat-label" id="stat3">وقت تشغيل مستمر</span>
             </div>
             <div class="stat-item reveal reveal-delay-3">
-                <span class="stat-num" data-target="50" data-prefix="من " data-suffix=" جنيه/يوم">0</span>
+                <span class="stat-num" data-target="20" data-suffix=" جنيه/يوم">0</span>
                 <span class="stat-label" id="stat4">تكلفة الاشتراك اليومية</span>
             </div>
         </div>
@@ -1284,14 +1284,15 @@
                 الكاملة</p>
         </div>
         <div class="pricing-grid">
-            <div class="pricing-card reveal">
-                <div class="plan-name" id="p1name">الخطة العادية</div>
+            <div class="pricing-card popular reveal" style="margin: 0 auto; width: 100%;">
+                <div class="popular-badge" id="popBadge">⭐ الخطة الشاملة</div>
+                <div class="plan-name" id="p1name">اشتراك دكان هب</div>
                 <div class="plan-price-row">
-                    <span class="plan-price" id="p1price">2,000</span>
+                    <span class="plan-price" id="p1price">20</span>
                     <span class="plan-currency" id="p1curr">جنيه</span>
-                    <span class="plan-period" id="p1period">/ شهر</span>
+                    <span class="plan-period" id="p1period">/ يوم</span>
                 </div>
-                <div class="plan-daily" id="p1daily">≈ 66.6 جنيه في اليوم 💡</div>
+                <div class="plan-daily" id="p1daily">600 جنيه فقط في الشهر 💡</div>
                 <hr class="plan-divider">
                 <ul class="plan-features">
                     <li id="pf1_1">نقطة بيع كاملة بكاشير متعدد</li>
@@ -1300,35 +1301,10 @@
                     <li id="pf1_4">دعم الموازين الحرارية</li>
                     <li id="pf1_5">إدارة المخزون والموظفين</li>
                     <li id="pf1_6">إدارة العملاء والديون</li>
-                    <li id="pf1_7">دعم فني متواصل</li>
+                    <li id="pf1_7">دعم فني متواصل 24/7</li>
                 </ul>
-                <a href="https://wa.me/201111847065?text=أهلاً، عايز أشترك في الخطة العادية 2000 جنيه" target="_blank">
-                    <button class="plan-btn plan-btn-outline" id="p1btn">ابدأ بالخطة العادية</button>
-                </a>
-            </div>
-            <div class="pricing-card popular reveal reveal-delay-1">
-                <div class="popular-badge" id="popBadge">⭐ الأوفر والأقوى</div>
-                <div class="plan-name" id="p2name">خطة التوفير السنوي</div>
-                <div class="plan-onetime" id="p2onetime">دفعة أولى 10,000 جنيه عند البدء</div>
-                <div class="plan-price-row">
-                    <span class="plan-price" id="p2price">2,000</span>
-                    <span class="plan-currency" id="p2curr">جنيه</span>
-                    <span class="plan-period" id="p2period">/ 3 أشهر</span>
-                </div>
-                <div class="plan-daily" id="p2daily">وفر 6,000 جنيه سنوياً! 🔥</div>
-                <hr class="plan-divider">
-                <ul class="plan-features">
-                    <li id="pf2_1">كل مميزات الخطة العادية</li>
-                    <li id="pf2_2">أولوية الدعم الفني</li>
-                    <li id="pf2_3">توفير 6,000 جنيه سنوياً</li>
-                    <li id="pf2_4">إعداد مجاني كامل</li>
-                    <li id="pf2_5">تدريب مجاني للموظفين</li>
-                    <li id="pf2_6">تخصيص شعار وإعدادات المتجر</li>
-                    <li id="pf2_7">تقارير متقدمة ومخصصة</li>
-                </ul>
-                <a href="https://wa.me/201111847065?text=أهلاً، عايز أشترك في خطة التوفير 10000 دفعة أولى + 2000 كل 3 أشهر"
-                    target="_blank">
-                    <button class="plan-btn plan-btn-solid" id="p2btn">ابدأ بخطة التوفير ⚡</button>
+                <a href="https://wa.me/201111847054?text=أهلاً دكان هب، حابب أشترك في خطة الـ 20 جنيه في اليوم" target="_blank">
+                    <button class="plan-btn plan-btn-solid" id="p1btn">اشترك الآن ⚡</button>
                 </a>
             </div>
         </div>
@@ -1468,13 +1444,10 @@ const T = {
                 s2t: 'هنجهز متجرك الخاص', s2d: 'بنعمل لك حساب خاص بمحلك مع رابطك الفرعي الخاص — في دقائق معدودة',
                 s3t: 'أضف منتجاتك', s3d: 'أضف منتجاتك يدوياً أو استوردها من ملف Excel — الكاشير جاهز فوراً',
                 s4t: 'ابدأ البيع وتابع تقاريرك', s4d: 'الكاشير شغال، التقارير بتيجي على إيميلك كل يوم، وإنت مرتاح البال',
-                pricingTag: 'الأسعار', pricingTitle: 'خطط واضحة، بدون مفاجآت', pricingDesc: 'اختار الخطة اللي تناسبك — كل الخطط فيها نفس المميزات الاحترافية الكاملة',
-                p1name: 'الخطة العادية', p1price: '2,000', p1curr: 'جنيه', p1period: '/ شهر', p1daily: '≈ 66.6 جنيه في اليوم 💡',
-                pf1_1: 'نقطة بيع كاملة بكاشير متعدد', pf1_2: 'تقارير يومية على البريد الإلكتروني', pf1_3: 'فواتير حرارية بشعار محلك', pf1_4: 'دعم الموازين الحرارية', pf1_5: 'إدارة المخزون والموظفين', pf1_6: 'إدارة العملاء والديون', pf1_7: 'دعم فني متواصل',
-                p1btn: 'ابدأ بالخطة العادية', popBadge: '⭐ الأوفر والأقوى',
-                p2name: 'خطة التوفير السنوي', p2onetime: 'دفعة أولى 10,000 جنيه عند البدء', p2price: '2,000', p2curr: 'جنيه', p2period: '/ 3 أشهر', p2daily: 'وفر 6,000 جنيه سنوياً! 🔥',
-                pf2_1: 'كل مميزات الخطة العادية', pf2_2: 'أولوية الدعم الفني', pf2_3: 'توفير 6,000 جنيه سنوياً', pf2_4: 'إعداد مجاني كامل', pf2_5: 'تدريب مجاني للموظفين', pf2_6: 'تخصيص شعار وإعدادات المتجر', pf2_7: 'تقارير متقدمة ومخصصة',
-                p2btn: 'ابدأ بخطة التوفير ⚡', pricingNote: '💬 مش متأكد؟ تواصل معنا وهنساعدك تختار الأنسب لمحلك',
+                p1name: 'اشتراك دكان هب', p1price: '20', p1curr: 'جنيه', p1period: '/ يوم', p1daily: '600 جنيه فقط في الشهر 💡',
+                pf1_1: 'نقطة بيع كاملة بكاشير متعدد', pf1_2: 'تقارير يومية على البريد الإلكتروني', pf1_3: 'فواتير حرارية بشعار محلك', pf1_4: 'دعم الموازين الحرارية', pf1_5: 'إدارة المخزون والموظفين', pf1_6: 'إدارة العملاء والديون', pf1_7: 'دعم فني متواصل 24/7',
+                p1btn: 'اشترك الآن ⚡', popBadge: '⭐ الخطة الشاملة',
+                pricingNote: '💬 مش متأكد؟ تواصل معنا وهنساعدك تختار الأنسب لمحلك',
                 contactTag: 'تواصل معنا', contactTitle: 'خد الخطوة الأولى النهارده', contactSub: 'فريقنا جاهز يساعدك تبدأ وتشغل محلك بأحدث نظام POS في مصر',
                 waBtnText: 'ابعتلنا على واتسآب دلوقتي',
                 modalTitle: 'ادخل على متجرك', modalSub: 'أدخل اسم متجرك للوصول لنظام الكاشير الخاص بك', modalSubmit: '🚀 انتقل للكاشير',
@@ -1500,12 +1473,12 @@ const T = {
                 s3t: 'Add Your Products', s3d: 'Add products manually or import from Excel — your POS is ready immediately',
                 s4t: 'Start Selling & Track Reports', s4d: 'The cashier is running, reports come to your email daily, and you have total peace of mind',
                 pricingTag: 'Pricing', pricingTitle: 'Clear Plans, No Surprises', pricingDesc: 'Choose the plan that suits you — all plans include the full professional feature set',
-                p1name: 'Standard Plan', p1price: '2,000', p1curr: 'EGP', p1period: '/ month', p1daily: '≈ 66.6 EGP per day 💡',
-                pf1_1: 'Full POS with multi-cashier', pf1_2: 'Daily email sales reports', pf1_3: 'Thermal invoices with your logo', pf1_4: 'Thermal scale support', pf1_5: 'Inventory & staff management', pf1_6: 'Customer & debt management', pf1_7: 'Continuous technical support',
-                p1btn: 'Start Standard Plan', popBadge: '⭐ Best Value',
-                p2name: 'Annual Savings Plan', p2onetime: 'One-time setup fee: 10,000 EGP', p2price: '2,000', p2curr: 'EGP', p2period: '/ 3 months', p2daily: 'Save 6,000 EGP per year! 🔥',
-                pf2_1: 'All Standard Plan features', pf2_2: 'Priority technical support', pf2_3: 'Save 6,000 EGP per year', pf2_4: 'Free full setup', pf2_5: 'Free staff training', pf2_6: 'Custom logo & store settings', pf2_7: 'Advanced custom reports',
-                p2btn: 'Start Savings Plan ⚡', pricingNote: "💬 Not sure? Contact us and we'll help you choose what's best for your business",
+                p1name: 'DokkanHub Subscription', p1price: '20', p1curr: 'EGP', p1period: '/ day', p1daily: 'Only 600 EGP per month 💡',
+                pf1_1: 'Full POS with multi-cashier', pf1_2: 'Daily email sales reports', pf1_3: 'Thermal invoices with your logo', pf1_4: 'Thermal scale support', pf1_5: 'Inventory & staff management', pf1_6: 'Customer & debt management', pf1_7: 'Continuous technical support 24/7',
+                p1btn: 'Subscribe Now ⚡', popBadge: '⭐ All-in-One Plan',
+                p2name: '', p2onetime: '', p2price: '', p2curr: '', p2period: '', p2daily: '',
+                pf2_1: '', pf2_2: '', pf2_3: '', pf2_4: '', pf2_5: '', pf2_6: '', pf2_7: '',
+                p2btn: '', pricingNote: "💬 Not sure? Contact us and we'll help you choose what's best for your business",
                 contactTag: 'Contact Us', contactTitle: 'Take the First Step Today', contactSub: "Our team is ready to help you launch your business with Egypt's most advanced POS system",
                 waBtnText: 'Message Us on WhatsApp Now',
                 modalTitle: 'Access Your Store', modalSub: 'Enter your store name to access your dedicated POS system', modalSubmit: '🚀 Go to POS',
@@ -1528,6 +1501,22 @@ const T = {
                 const el = document.getElementById(id);
                 if (el && t[id] !== undefined && id !== 'footerCopy') el.textContent = t[id];
             });
+
+            // Update stats strip attributes based on language
+            const stat4El = document.querySelector('.stats-grid .stat-item:nth-child(4) .stat-num');
+            if (stat4El) {
+                if (lang === 'ar') {
+                    stat4El.setAttribute('data-suffix', ' جنيه/يوم');
+                } else {
+                    stat4El.setAttribute('data-suffix', ' EGP/day');
+                }
+                // Force re-animation
+                if (stat4El.dataset.counted) {
+                    delete stat4El.dataset.counted;
+                    animateCounter(stat4El);
+                }
+            }
+
             const fc = document.getElementById('footerCopy');
             if (fc) fc.innerHTML = t.footerCopy + '<a href="mailto:sales@dokkanhub.com">sales@dokkanhub.com</a>';
         }
