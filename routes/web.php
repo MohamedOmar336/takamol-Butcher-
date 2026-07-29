@@ -38,6 +38,7 @@ Route::get('/change-language/{locale}', [AuthController::class, 'changeLanguage'
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/login/bypass', [AuthController::class, 'loginBypass'])->name('login.bypass');
 
 // 3. Authenticated routes
 Route::middleware(['auth'])->group(function () {

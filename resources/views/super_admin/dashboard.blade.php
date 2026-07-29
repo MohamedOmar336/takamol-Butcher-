@@ -150,6 +150,14 @@
                                                 </button>
                                             @endif
                                         </form>
+                                        @php
+                                            $bypassTimestamp = time();
+                                            $bypassSignature = hash_hmac('sha256', $tenant->slug . '|' . $bypassTimestamp, config('app.key'));
+                                            $bypassUrl = "http://{$tenant->slug}.{$centralDomain}/login/bypass?timestamp={$bypassTimestamp}&signature={$bypassSignature}";
+                                        @endphp
+                                        <a href="{{ $bypassUrl }}" target="_blank" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem; background-color: #0f172a; border-color: #0f172a; color: white; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; border-radius: 6px;">
+                                            🔑 {{ app()->getLocale() === 'ar' ? 'دخول للمتجر' : 'Login to Store' }}
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

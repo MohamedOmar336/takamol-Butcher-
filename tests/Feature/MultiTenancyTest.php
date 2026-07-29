@@ -76,4 +76,61 @@ class MultiTenancyTest extends TestCase
         $tenant->delete();
         File::delete($dbPath);
     }
+
+    /**
+     * Test that the single-click secure login bypass works correctly.
+     */
+    public function test_tenant_login_bypass()
+    {
+        $slug = 'test-bypass-' . uniqid();
+        $dbName = "tenant_{$slug}.sqlite";
+        $dbPath = database_path("tenants/{$dbName}");
+
+        if (!File::isDirectory(database_path('tenants'))) {
+            File::makeDirectory(database_path('tenants'), 0755, true);
+        }
+        File::put($dbPath, '');
+
+        $tenant = Tenant::create([
+            'name' => 'Bypass Store',
+            'slug' => $slug,
+            'db_name' => $dbName,
+            'store_type' => 'supermarket',
+            'owner_email' => 'bypass@example.com',
+            'status' => 'active',
+        ]);
+
+        $originalDb = config('database.connections.sqlite.database');
+        config(['database.connections.sqlite.database' => $dbPath]);
+        DB::purge('sqlite');
+        DB::reconnect('sqlite');
+
+        \Illuminate\Support\Facades\Artisan::call('migrate', [
+            '--database' => 'sqlite',
+            '--path' => 'database/migrations',
+            '--force' => true,
+        ]);
+
+        \App\Models\User::create([
+            'name' => 'Store Owner',
+            'email' => 'admin@bypass.com',
+            'password' => bcrypt('secret123'),
+            'is_admin' => true,
+        ]);
+
+        config(['database.connections.sqlite.database' => $originalDb]);
+        DB::purge('sqlite');
+        DB::reconnect('sqlite');
+
+        $timestamp = time();
+        $signature = hash_hmac('sha256', $slug . '|' . $timestamp, config('app.key'));
+        
+        $response = $this->get("http://{$slug}.localhost/login/bypass?timestamp={$timestamp}&signature={$signature}");
+        
+        $response->assertRedirect(route('pos.index'));
+        $this->assertAuthenticated();
+
+        $tenant->delete();
+        File::delete($dbPath);
+    }
 }

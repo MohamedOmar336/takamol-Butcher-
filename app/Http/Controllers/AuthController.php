@@ -59,4 +59,39 @@ class AuthController extends Controller
         }
         return redirect()->back();
     }
+
+    public function loginBypass(Request $request)
+    {
+        $timestamp = $request->get('timestamp');
+        $signature = $request->get('signature');
+
+        if (!$timestamp || !$signature) {
+            abort(403, 'Missing signature or timestamp / توقيع غير صالح');
+        }
+
+        if (abs(time() - (int)$timestamp) > 60) {
+            abort(403, 'Bypass token has expired / انتهت صلاحية رابط الدخول');
+        }
+
+        $activeTenant = app()->has('activeTenant') ? app('activeTenant') : null;
+        if (!$activeTenant) {
+            abort(404, 'No store detected / لم يتم الكشف عن متجر');
+        }
+
+        $expectedHash = hash_hmac('sha256', $activeTenant->slug . '|' . $timestamp, config('app.key'));
+        if (!hash_equals($expectedHash, $signature)) {
+            abort(403, 'Invalid signature / توقيع غير صالح');
+        }
+
+        $user = \App\Models\User::where('is_admin', true)->first() ?: \App\Models\User::first();
+
+        if (!$user) {
+            abort(404, 'No admin user found in this store / لا يوجد مستخدمين لهذا المتجر');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('pos.index');
+    }
 }
