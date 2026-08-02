@@ -133,4 +133,54 @@ class MultiTenancyTest extends TestCase
         $tenant->delete();
         File::delete($dbPath);
     }
+
+    /**
+     * Test that a tenant can be deleted via Super Admin.
+     */
+    public function test_tenant_deletion()
+    {
+        $slug = 'test-delete-' . uniqid();
+        $dbName = "tenant_{$slug}.sqlite";
+        $dbPath = database_path("tenants/{$dbName}");
+
+        if (!File::isDirectory(database_path('tenants'))) {
+            File::makeDirectory(database_path('tenants'), 0755, true);
+        }
+        File::put($dbPath, '');
+
+        $tenant = Tenant::create([
+            'name' => 'Delete Store',
+            'slug' => $slug,
+            'db_name' => $dbName,
+            'store_type' => 'general',
+            'owner_email' => 'delete@example.com',
+            'status' => 'active',
+        ]);
+
+        $this->assertTrue(File::exists($dbPath));
+
+        \Illuminate\Support\Facades\Artisan::call('migrate', [
+            '--path' => 'database/migrations/central',
+            '--force' => true,
+        ]);
+
+        $superAdmin = \App\Models\User::create([
+            'name' => 'Super Admin Test',
+            'email' => 'superadmin-' . uniqid() . '@example.com',
+            'password' => bcrypt('password123'),
+            'is_admin' => true
+        ]);
+        $this->actingAs($superAdmin);
+
+        $centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost';
+        $response = $this->delete("http://{$centralDomain}/super-admin/tenants/{$tenant->id}");
+
+        $response->assertRedirect(route('super_admin.dashboard'));
+
+        $this->assertFalse(File::exists($dbPath));
+
+        $this->assertDatabaseMissing('tenants', [
+            'id' => $tenant->id
+        ], 'central');
+    }
 }

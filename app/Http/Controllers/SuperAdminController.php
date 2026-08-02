@@ -316,4 +316,31 @@ class SuperAdminController extends Controller
 
         return redirect()->route('super_admin.dashboard')->with('success', 'Store details updated successfully! / تم تحديث بيانات المتجر بنجاح!');
     }
+
+    /**
+     * Delete a Store and its SQLite database file.
+     */
+    public function destroyTenant(Tenant $tenant)
+    {
+        $dbPath = database_path("tenants/{$tenant->db_name}");
+
+        // 1. Delete tenant database file if it exists
+        if (File::exists($dbPath)) {
+            File::delete($dbPath);
+        }
+
+        // 2. Delete tenant logo if it exists
+        $settings = $tenant->settings ?? [];
+        if (isset($settings['logo'])) {
+            $logoPath = public_path($settings['logo']);
+            if (File::exists($logoPath)) {
+                File::delete($logoPath);
+            }
+        }
+
+        // 3. Delete from central tenants table
+        $tenant->delete();
+
+        return redirect()->route('super_admin.dashboard')->with('success', 'Store deleted successfully! / تم حذف المتجر بنجاح!');
+    }
 }

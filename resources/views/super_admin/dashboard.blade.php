@@ -150,6 +150,13 @@
                                                 </button>
                                             @endif
                                         </form>
+                                        <form action="/super-admin/tenants/{{ $tenant->id }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; border-color: #ef4444; color: #ef4444; background: none;" onclick="return confirm('{{ app()->getLocale() === 'ar' ? '⚠️ تحذير: هل أنت متأكد من حذف هذا المتجر نهائياً؟ سيتم مسح قاعدة البيانات وكل المبيعات والمنتجات ولا يمكن استرجاعها!' : '⚠️ Warning: Are you sure you want to permanently delete this store? This will delete the database, all sales, and products. This action CANNOT be undone!' }}')">
+                                                🗑️ {{ app()->getLocale() === 'ar' ? 'حذف' : 'Delete' }}
+                                            </button>
+                                        </form>
                                         @php
                                             $bypassTimestamp = time();
                                             $bypassSignature = hash_hmac('sha256', $tenant->slug . '|' . $bypassTimestamp, config('app.key'));
