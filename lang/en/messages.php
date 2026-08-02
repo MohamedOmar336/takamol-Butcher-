@@ -2,7 +2,7 @@
 
 return [
     // General
-    'app_name' => 'Al-Takamul POS System',
+    'app_name' => 'DokkanHub',
     'pos' => 'POS Terminal',
     'admin_panel' => 'Admin Panel',
     'scale_simulator' => 'Scale Simulator',

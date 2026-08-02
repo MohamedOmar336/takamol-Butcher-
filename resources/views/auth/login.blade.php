@@ -1,13 +1,19 @@
+@php
+    $activeTenant = $activeTenant ?? (app()->has('activeTenant') ? app('activeTenant') : null);
+    $tenantLogo = ($activeTenant && isset($activeTenant->settings['logo'])) 
+        ? asset($activeTenant->settings['logo']) 
+        : asset('images/logo.jpg');
+@endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.login') }} | {{ __('messages.app_name') }}</title>
+    <title>{{ __('messages.login') }} | {{ $activeTenant?->name ?? __('messages.app_name') }}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('images/logo.jpg') }}?v={{ filemtime(public_path('images/logo.jpg')) }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ $tenantLogo }}?v={{ filemtime(public_path('images/logo.jpg')) }}">
 
     <script>
         const storedTheme = localStorage.getItem('theme') || 'light';
@@ -77,8 +83,8 @@
             </div>
 
             <!-- Logo -->
-            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="login-logo">
-            <h2 class="login-title">{{ __('messages.app_name') }}</h2>
+            <img src="{{ $tenantLogo }}" alt="Logo" class="login-logo">
+            <h2 class="login-title">{{ $activeTenant?->name ?? '' }}</h2>
 
             @if($errors->any())
                 <div class="panel"

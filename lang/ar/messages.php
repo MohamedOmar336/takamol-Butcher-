@@ -2,7 +2,7 @@
 
 return [
     // General
-    'app_name' => 'ملحمه التكامل لتقطيع وتصنيف اللحوم',
+    'app_name' => 'دكان هب',
     'pos' => 'نقطة البيع',
     'admin_panel' => 'لوحة التحكم',
     'scale_simulator' => 'محاكي الميزان',
