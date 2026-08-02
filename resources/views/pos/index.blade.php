@@ -146,6 +146,24 @@
                 <input type="hidden" id="discountInput" value="0">
             @endif
 
+            <div class="pricing-row" style="margin-top: 5px;">
+                <span>{{ app()->getLocale() === 'ar' ? 'رسوم التوصيل' : 'Delivery Fee' }}</span>
+                <input type="number" id="deliveryInput" class="form-control" style="width: 100px; padding: 4px 8px; text-align: center; font-size: 0.85rem;" value="0" min="0" step="1">
+            </div>
+
+            <div id="deliveryAddressSection" style="display: none; margin-top: 8px; width: 100%;">
+                <label class="form-label" style="font-size: 0.8rem; margin-bottom: 2px; text-align: start; display: block; font-weight: bold; color: var(--text-secondary);">{{ app()->getLocale() === 'ar' ? 'عنوان التوصيل بالتفصيل' : 'Detailed Delivery Address' }}</label>
+                <textarea id="deliveryAddressInput" class="form-control" rows="1" style="font-size: 0.8rem; padding: 6px 8px; resize: vertical; margin-bottom: 6px;" placeholder="{{ app()->getLocale() === 'ar' ? 'اكتب عنوان العميل بالتفصيل للتوصيل...' : 'Enter delivery address details...' }}"></textarea>
+                
+                <label class="form-label" style="font-size: 0.8rem; margin-bottom: 2px; text-align: start; display: block; font-weight: bold; color: var(--text-secondary);">{{ app()->getLocale() === 'ar' ? 'طيار الديليفري' : 'Delivery Driver' }}</label>
+                <select id="driverNameInput" class="form-control" style="font-size: 0.8rem; padding: 6px 8px;">
+                    <option value="">{{ app()->getLocale() === 'ar' ? '-- اختر الطيار --' : '-- Select Driver --' }}</option>
+                    @foreach($drivers as $driver)
+                        <option value="{{ $driver->name }}">{{ $driver->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="pricing-row total">
                 <span>{{ __('messages.total') }}</span>
                 <span id="cartTotal">0.00 {{ __('messages.currency') }}</span>
@@ -262,6 +280,10 @@
     
     const cartSubtotal = document.getElementById('cartSubtotal');
     const discountInput = document.getElementById('discountInput');
+    const deliveryInput = document.getElementById('deliveryInput');
+    const deliveryAddressSection = document.getElementById('deliveryAddressSection');
+    const deliveryAddressInput = document.getElementById('deliveryAddressInput');
+    const driverNameInput = document.getElementById('driverNameInput');
     const cartTotal = document.getElementById('cartTotal');
     const paymentBtns = document.querySelectorAll('.payment-btn');
     const btnCheckout = document.getElementById('btnCheckout');
@@ -653,11 +675,26 @@
     function updateTotals(subtotal) {
         cartSubtotal.innerText = `${subtotal.toFixed(2)} ج.م`;
         const discount = parseFloat(discountInput.value) || 0.00;
-        const total = Math.max(0.00, subtotal - discount);
+        const deliveryFee = parseFloat(deliveryInput.value) || 0.00;
+        const total = Math.max(0.00, subtotal - discount) + deliveryFee;
         cartTotal.innerText = `${total.toFixed(2)} ج.م`;
+
+        if (deliveryFee > 0) {
+            deliveryAddressSection.style.display = 'block';
+        } else {
+            deliveryAddressSection.style.display = 'none';
+        }
     }
 
     discountInput.addEventListener('input', () => {
+        let subtotal = 0.00;
+        cart.forEach(item => {
+            subtotal += roundPrice(item.quantity * item.price);
+        });
+        updateTotals(subtotal);
+    });
+
+    deliveryInput.addEventListener('input', () => {
         let subtotal = 0.00;
         cart.forEach(item => {
             subtotal += roundPrice(item.quantity * item.price);
@@ -724,6 +761,12 @@
         customerSearchResults.style.display = 'none';
         customerSearchInput.value = '';
 
+        if (customer.address) {
+            deliveryAddressInput.value = customer.address;
+        } else {
+            deliveryAddressInput.value = '';
+        }
+
         // Update debt ledger values
         customerDebtAmount.innerText = parseFloat(customer.balance).toFixed(2);
         customerDebtLimit.innerText = parseFloat(customer.credit_limit).toFixed(2);
@@ -735,6 +778,7 @@
         linkedCustomerContainer.style.display = 'none';
         customerSearchContainer.style.display = 'flex';
         customerDebtPreview.style.display = 'none';
+        deliveryAddressInput.value = '';
     });
 
     // 6. PAYMENT BUTTONS SELECTOR
@@ -804,6 +848,9 @@
         const payload = {
             payment_method: activePaymentMethod,
             discount_amount: parseFloat(discountInput.value) || 0.00,
+            delivery_fee: parseFloat(deliveryInput.value) || 0.00,
+            delivery_address: deliveryAddressInput.value || null,
+            driver_name: driverNameInput.value || null,
             customer_id: linkedCustomer ? linkedCustomer.id : null,
             cart: cart.map(item => ({
                 product_id: item.product_id,
@@ -833,6 +880,9 @@
                 cart = [];
                 linkedCustomer = null;
                 discountInput.value = 0;
+                deliveryInput.value = 0;
+                deliveryAddressInput.value = '';
+                driverNameInput.value = '';
                 btnRemoveCustomer.click(); // resets customer views
                 renderCart();
 

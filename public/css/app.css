@@ -1473,5 +1473,52 @@ html[dir="rtl"] .product-card-stock {
     .sidebar-backdrop.active {
         opacity: 1 !important;
     }
+
+    .desktop-toggle-btn {
+        display: none !important;
+    }
+}
+
+/* Collapsible Sidebar Styles */
+.app-layout.sidebar-collapsed {
+    --sidebar-width: 70px;
+}
+
+.app-layout.sidebar-collapsed .app-sidebar {
+    padding: 20px 10px;
+    align-items: center;
+}
+
+.app-layout.sidebar-collapsed .brand {
+    padding-bottom: 15px;
+}
+
+.app-layout.sidebar-collapsed .brand img {
+    height: 40px;
+    margin-bottom: 0;
+}
+
+.app-layout.sidebar-collapsed .brand-name,
+.app-layout.sidebar-collapsed .nav-text,
+.app-layout.sidebar-collapsed .logout-text {
+    display: none;
+}
+
+.app-layout.sidebar-collapsed .nav-item a {
+    justify-content: center;
+    padding: 12px;
+}
+
+.app-layout.sidebar-collapsed .logout-btn {
+    justify-content: center;
+    padding: 12px;
+}
+
+/* Transitions for smooth collapse */
+.app-sidebar {
+    transition: width 0.3s ease, padding 0.3s ease;
+}
+.app-content {
+    transition: margin-left 0.3s ease, margin-right 0.3s ease;
 }
 

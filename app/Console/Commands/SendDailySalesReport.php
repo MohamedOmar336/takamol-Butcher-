@@ -86,6 +86,24 @@ class SendDailySalesReport extends Command
             })
             ->toArray();
 
+        // Delivery drivers breakdown for today
+        $deliveryBreakdown = Order::where('status', 'completed')
+            ->whereDate('created_at', $today)
+            ->where('delivery_fee', '>', 0)
+            ->whereNotNull('driver_name')
+            ->where('driver_name', '<>', '')
+            ->select('driver_name', DB::raw('COUNT(*) as order_count'), DB::raw('SUM(delivery_fee) as total_fees'))
+            ->groupBy('driver_name')
+            ->get()
+            ->map(function($d) {
+                return [
+                    'driver_name' => $d->driver_name,
+                    'order_count' => $d->order_count,
+                    'total_fees' => $d->total_fees
+                ];
+            })
+            ->toArray();
+
         $stats = [
             'date' => $dateStr,
             'total_sales' => $totalSales,
@@ -95,7 +113,8 @@ class SendDailySalesReport extends Command
             'card_sales' => $cardSales,
             'credit_sales' => $creditSales,
             'top_products' => $topProducts,
-            'low_stock' => $lowStockProducts
+            'low_stock' => $lowStockProducts,
+            'delivery_breakdown' => $deliveryBreakdown
         ];
 
         // Send Email

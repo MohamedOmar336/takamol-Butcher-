@@ -13,6 +13,9 @@ class Order extends Model
         'payment_method',
         'total_amount',
         'discount_amount',
+        'delivery_fee',
+        'delivery_address',
+        'driver_name',
         'cashier_name',
         'status'
     ];

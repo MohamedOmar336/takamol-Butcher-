@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ScaleSimulatorController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\DriverController;
 
 // Central Domain Routing (Landing & Super Admin Panel)
 $centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost';
@@ -78,6 +79,12 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/users', [DashboardController::class, 'usersStore'])->name('admin.users.store');
             Route::put('/users/{user}', [DashboardController::class, 'usersUpdate'])->name('admin.users.update');
             Route::delete('/users/{user}', [DashboardController::class, 'usersDestroy'])->name('admin.users.destroy');
+
+            // Drivers CRUD
+            Route::get('/drivers', [DriverController::class, 'index'])->name('admin.drivers.index');
+            Route::post('/drivers', [DriverController::class, 'store'])->name('admin.drivers.store');
+            Route::put('/drivers/{driver}', [DriverController::class, 'update'])->name('admin.drivers.update');
+            Route::delete('/drivers/{driver}', [DriverController::class, 'destroy'])->name('admin.drivers.destroy');
         });
 
         // Products Catalog & Excel Importer (requires manage_inventory)

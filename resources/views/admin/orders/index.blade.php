@@ -118,6 +118,8 @@
                                         data-customer="{{ $order->customer ? $order->customer->name : (app()->getLocale() === 'ar' ? 'عميل كاش' : 'Cash Customer') }}"
                                         data-date="{{ $order->created_at->format('Y-m-d H:i') }}"
                                         data-discount="{{ floatval($order->discount_amount) }}"
+                                        data-delivery-fee="{{ floatval($order->delivery_fee) }}"
+                                        data-delivery-address="{{ $order->delivery_address ?? '' }}"
                                         data-total="{{ floatval($order->total_amount) }}"
                                         data-items="{{ json_encode($order->items->map(function($item) {
                                             return [
@@ -169,12 +171,15 @@
             <button id="btnCloseModal" class="btn-close">&times;</button>
         </div>
         <div class="modal-body">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-size: 0.9rem; padding: 10px; background-color: var(--bg-color); border-radius: var(--btn-radius);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; font-size: 0.9rem; padding: 10px; background-color: var(--bg-tertiary); border-radius: var(--btn-radius);">
                 <div>
                     <strong>{{ __('messages.customers') }}:</strong> <span id="modalCustomerName"></span>
                 </div>
                 <div style="text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
                     <strong>{{ __('messages.date') }}:</strong> <span id="modalInvoiceDate"></span>
+                </div>
+                <div id="modalAddressContainer" style="grid-column: span 2; display: none; margin-top: 5px; border-top: 1px dashed var(--border-color); padding-top: 5px;">
+                    <strong>{{ app()->getLocale() === 'ar' ? 'عنوان التوصيل' : 'Delivery Address' }}:</strong> <span id="modalDeliveryAddress"></span>
                 </div>
             </div>
 
@@ -195,6 +200,9 @@
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 15px; font-size: 0.95rem;">
                 <div id="modalDiscountRow" style="display: none;">
                     {{ __('messages.discount') }}: <span id="modalDiscountValue" class="font-bold"></span> {{ __('messages.currency') }}
+                </div>
+                <div id="modalDeliveryRow" style="display: none;">
+                    {{ app()->getLocale() === 'ar' ? 'رسوم التوصيل' : 'Delivery Fee' }}: +<span id="modalDeliveryValue" class="font-bold"></span> {{ __('messages.currency') }}
                 </div>
                 <div style="font-size: 1.2rem; color: var(--accent-color);">
                     <strong>{{ __('messages.total') }}:</strong> <span id="modalTotalValue" class="font-bold"></span> {{ __('messages.currency') }}
@@ -233,9 +241,9 @@
         pointer-events: auto;
     }
     .modal-card {
-        background: var(--panel-bg);
+        background: var(--bg-secondary);
         border: 1px solid var(--border-color);
-        border-radius: var(--panel-radius);
+        border-radius: var(--card-radius);
         box-shadow: var(--shadow-lg);
         width: 90%;
         max-height: 90vh;
@@ -324,6 +332,10 @@
         const modalItemsTableBody = document.getElementById('modalItemsTableBody');
         const modalDiscountRow = document.getElementById('modalDiscountRow');
         const modalDiscountValue = document.getElementById('modalDiscountValue');
+        const modalAddressContainer = document.getElementById('modalAddressContainer');
+        const modalDeliveryAddress = document.getElementById('modalDeliveryAddress');
+        const modalDeliveryRow = document.getElementById('modalDeliveryRow');
+        const modalDeliveryValue = document.getElementById('modalDeliveryValue');
         const modalTotalValue = document.getElementById('modalTotalValue');
 
         // Open Modal Handler
@@ -333,6 +345,8 @@
                 const customer = btn.getAttribute('data-customer');
                 const date = btn.getAttribute('data-date');
                 const discount = parseFloat(btn.getAttribute('data-discount'));
+                const deliveryFee = parseFloat(btn.getAttribute('data-delivery-fee')) || 0.00;
+                const deliveryAddress = btn.getAttribute('data-delivery-address');
                 const total = parseFloat(btn.getAttribute('data-total'));
                 const items = JSON.parse(btn.getAttribute('data-items'));
 
@@ -340,6 +354,13 @@
                 modalInvoiceNumber.innerText = `{{ __('messages.view_invoice') }} - ${orderNo}`;
                 modalCustomerName.innerText = customer;
                 modalInvoiceDate.innerText = date;
+
+                if (deliveryAddress && deliveryAddress.trim() !== '') {
+                    modalDeliveryAddress.innerText = deliveryAddress;
+                    modalAddressContainer.style.display = 'block';
+                } else {
+                    modalAddressContainer.style.display = 'none';
+                }
 
                 // Populate Table
                 modalItemsTableBody.innerHTML = '';
@@ -366,6 +387,14 @@
                 } else {
                     modalDiscountRow.style.display = 'none';
                 }
+
+                if (deliveryFee > 0) {
+                    modalDeliveryValue.innerText = deliveryFee.toFixed(2);
+                    modalDeliveryRow.style.display = 'block';
+                } else {
+                    modalDeliveryRow.style.display = 'none';
+                }
+
                 modalTotalValue.innerText = total.toFixed(2);
 
                 // Show modal

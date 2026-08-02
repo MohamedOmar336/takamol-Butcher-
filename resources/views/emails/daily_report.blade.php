@@ -59,6 +59,35 @@
             </tr>
         </table>
 
+        <!-- Delivery Breakdown -->
+        @if(isset($stats['delivery_breakdown']) && count($stats['delivery_breakdown']) > 0)
+            <h3 style="color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 15px;">🛵 تقرير التوصيل والديليفري</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 0.9rem;">
+                <thead>
+                    <tr style="background-color: #f1f5f9;">
+                        <th style="padding: 8px; text-align: right; border-bottom: 2px solid #cbd5e1;">الطيار</th>
+                        <th style="padding: 8px; text-align: center; border-bottom: 2px solid #cbd5e1;">عدد الطلبات</th>
+                        <th style="padding: 8px; text-align: left; border-bottom: 2px solid #cbd5e1;">إجمالي رسوم التوصيل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($stats['delivery_breakdown'] as $d)
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">
+                                🛵 {{ $d['driver_name'] }}
+                            </td>
+                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid #e2e8f0;">
+                                {{ $d['order_count'] }} طلب
+                            </td>
+                            <td style="padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #7c3aed;">
+                                {{ floatval($d['total_fees']) }} ج.م
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
         <!-- Top Selling Products -->
         <h3 style="color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 15px;">🥩 الأصناف الأكثر مبيعاً اليوم</h3>
         @if(count($stats['top_products']) > 0)

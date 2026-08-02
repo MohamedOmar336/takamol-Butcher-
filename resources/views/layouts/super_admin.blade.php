@@ -69,6 +69,10 @@
                     <button id="sidebarToggle" class="mobile-toggle-btn" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-primary); padding: 0;" title="Toggle Sidebar">
                         ☰
                     </button>
+                    <!-- Desktop sidebar collapse button -->
+                    <button id="desktopSidebarToggle" class="desktop-toggle-btn" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-secondary); padding: 0; display: flex; align-items: center; justify-content: center;" title="Collapse/Expand Sidebar">
+                        ◀
+                    </button>
                     <h1 class="header-title" style="margin: 0;">@yield('header_title')</h1>
                 </div>
 
@@ -163,6 +167,38 @@
         
         if (backdrop) {
             backdrop.addEventListener('click', closeSidebar);
+        }
+
+        // Collapsible Sidebar Desktop logic
+        const appLayout = document.querySelector('.app-layout');
+        const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
+        const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+
+        function updateToggleIcon(collapsed) {
+            if (desktopSidebarToggle) {
+                if (collapsed) {
+                    desktopSidebarToggle.innerText = isRtl ? '◀' : '▶';
+                } else {
+                    desktopSidebarToggle.innerText = isRtl ? '▶' : '◀';
+                }
+            }
+        }
+
+        if (localStorage.getItem('sidebar-collapsed') === 'true') {
+            if (appLayout) appLayout.classList.add('sidebar-collapsed');
+            updateToggleIcon(true);
+        } else {
+            updateToggleIcon(false);
+        }
+
+        if (desktopSidebarToggle) {
+            desktopSidebarToggle.addEventListener('click', () => {
+                if (appLayout) {
+                    const collapsed = appLayout.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', collapsed ? 'true' : 'false');
+                    updateToggleIcon(collapsed);
+                }
+            });
         }
     </script>
     @yield('scripts')

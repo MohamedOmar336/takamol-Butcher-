@@ -158,6 +158,20 @@
         </div>
     @endif
 
+    @if($order->delivery_address)
+        <div class="info-row" style="margin-top: 4px;">
+            <span>{{ app()->getLocale() === 'ar' ? 'عنوان التوصيل' : 'Delivery Address' }}:</span>
+            <span class="font-bold" style="text-align: right; max-width: 60%; word-wrap: break-word;">{{ $order->delivery_address }}</span>
+        </div>
+    @endif
+
+    @if($order->driver_name)
+        <div class="info-row" style="margin-top: 4px;">
+            <span>{{ app()->getLocale() === 'ar' ? 'الطيار' : 'Driver' }}:</span>
+            <span class="font-bold">{{ $order->driver_name }}</span>
+        </div>
+    @endif
+
     <div class="divider"></div>
 
     <!-- Items Table -->
@@ -200,12 +214,18 @@
     <!-- Financial totals -->
     <div class="total-row">
         <span>{{ __('messages.subtotal') }}:</span>
-        <span>{{ floatval($order->total_amount + $order->discount_amount) }} {{ __('messages.currency') }}</span>
+        <span>{{ floatval($order->total_amount - $order->delivery_fee + $order->discount_amount) }} {{ __('messages.currency') }}</span>
     </div>
     @if($order->discount_amount > 0)
         <div class="total-row" style="color: red;">
             <span>{{ __('messages.discount') }}:</span>
             <span>-{{ floatval($order->discount_amount) }} {{ __('messages.currency') }}</span>
+        </div>
+    @endif
+    @if($order->delivery_fee > 0)
+        <div class="total-row">
+            <span>{{ app()->getLocale() === 'ar' ? 'خدمة التوصيل' : 'Delivery Fee' }}:</span>
+            <span>+{{ floatval($order->delivery_fee) }} {{ __('messages.currency') }}</span>
         </div>
     @endif
 

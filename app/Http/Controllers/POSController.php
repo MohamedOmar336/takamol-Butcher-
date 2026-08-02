@@ -25,7 +25,10 @@ class POSController extends Controller
         // All active products for direct lookup/search
         $products = Product::where('is_active', true)->get();
 
-        return view('pos.index', compact('categories', 'products'));
+        // All active drivers
+        $drivers = \App\Models\Driver::where('is_active', true)->orderBy('name', 'asc')->get();
+
+        return view('pos.index', compact('categories', 'products', 'drivers'));
     }
 
     public function searchCustomer(Request $request)
@@ -183,6 +186,9 @@ class POSController extends Controller
             $validated = $request->validate([
                 'payment_method' => 'required|in:cash,card,credit',
                 'discount_amount' => 'nullable|numeric|min:0',
+                'delivery_fee' => 'nullable|numeric|min:0',
+                'delivery_address' => 'nullable|string',
+                'driver_name' => 'nullable|string',
                 'customer_id' => 'nullable|exists:customers,id',
                 'cart' => 'required|array|min:1',
                 'cart.*.product_id' => 'required|exists:products,id',
@@ -200,6 +206,9 @@ class POSController extends Controller
         $cart = $validated['cart'];
         $paymentMethod = $validated['payment_method'];
         $discountAmount = floatval($validated['discount_amount'] ?? 0.00);
+        $deliveryFee = floatval($validated['delivery_fee'] ?? 0.00);
+        $deliveryAddress = $validated['delivery_address'] ?? null;
+        $driverName = $validated['driver_name'] ?? null;
         $customerId = $validated['customer_id'] ?? null;
         $cashier = auth()->user();
 
@@ -214,7 +223,7 @@ class POSController extends Controller
         }
 
         try {
-            $orderId = DB::transaction(function () use ($cart, $paymentMethod, $discountAmount, $customerId, $cashier) {
+            $orderId = DB::transaction(function () use ($cart, $paymentMethod, $discountAmount, $deliveryFee, $deliveryAddress, $driverName, $customerId, $cashier) {
                 $totalAmount = 0.00;
                 $itemsToCreate = [];
                 $stockUpdates = [];
@@ -249,7 +258,7 @@ class POSController extends Controller
                     ];
                 }
 
-                $netTotal = max(0.00, $totalAmount - $discountAmount);
+                $netTotal = max(0.00, $totalAmount - $discountAmount) + $deliveryFee;
 
                 // 2. If credit, check limit
                 if ($paymentMethod === 'credit' && $customerId) {
@@ -276,6 +285,9 @@ class POSController extends Controller
                     'payment_method' => $paymentMethod,
                     'total_amount' => $netTotal,
                     'discount_amount' => $discountAmount,
+                    'delivery_fee' => $deliveryFee,
+                    'delivery_address' => $deliveryAddress,
+                    'driver_name' => $driverName,
                     'cashier_name' => $cashier->name
                 ]);
 
