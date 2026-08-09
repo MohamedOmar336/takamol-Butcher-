@@ -3,66 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Models\Driver;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DriverController extends Controller
 {
-    /**
-     * Display a listing of the drivers.
-     */
     public function index()
     {
-        $drivers = Driver::orderBy('name', 'asc')->paginate(10);
+        $drivers = Driver::withCount(['orders' => function($q) {
+            $q->whereDate('created_at', Carbon::today());
+        }])->get();
+
         return view('admin.drivers.index', compact('drivers'));
     }
 
-    /**
-     * Store a newly created driver.
-     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
+            'vehicle_type' => 'nullable|string|max:50',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        Driver::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'vehicle_type' => $request->vehicle_type ?? 'دراجة نارية',
+            'is_active' => true,
+        ]);
 
-        Driver::create($validated);
-
-        return redirect()->route('admin.drivers.index')->with('success', 
-            app()->getLocale() === 'ar' ? 'تم إضافة الطيار بنجاح.' : 'Driver added successfully.'
-        );
+        return redirect()->back()->with('success', app()->getLocale() === 'ar' ? 'تم إضافة الطيار بنجاح.' : 'Driver added successfully.');
     }
 
-    /**
-     * Update the specified driver.
-     */
     public function update(Request $request, Driver $driver)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:50',
+            'vehicle_type' => 'nullable|string|max:50',
+            'is_active' => 'nullable|boolean',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        $driver->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'vehicle_type' => $request->vehicle_type,
+            'is_active' => $request->has('is_active'),
+        ]);
 
-        $driver->update($validated);
-
-        return redirect()->route('admin.drivers.index')->with('success', 
-            app()->getLocale() === 'ar' ? 'تم تحديث بيانات الطيار بنجاح.' : 'Driver updated successfully.'
-        );
+        return redirect()->back()->with('success', app()->getLocale() === 'ar' ? 'تم تحديث بيانات الطيار بنجاح.' : 'Driver updated successfully.');
     }
 
-    /**
-     * Remove the specified driver.
-     */
     public function destroy(Driver $driver)
     {
         $driver->delete();
+        return redirect()->back()->with('success', app()->getLocale() === 'ar' ? 'تم حذف الطيار بنجاح.' : 'Driver deleted successfully.');
+    }
 
-        return redirect()->route('admin.drivers.index')->with('success', 
-            app()->getLocale() === 'ar' ? 'تم حذف الطيار بنجاح.' : 'Driver deleted successfully.'
-        );
+    /**
+     * End-of-Day Driver Cash & Delivery Settlement Report
+     */
+    public function settlementReport(Request $request)
+    {
+        $date = $request->get('date', Carbon::today()->format('Y-m-d'));
+        $selectedDriverId = $request->get('driver_id');
+
+        $drivers = Driver::orderBy('name')->get();
+
+        $query = Order::with(['driver', 'customer'])
+            ->whereNotNull('driver_id')
+            ->whereDate('created_at', $date);
+
+        if ($selectedDriverId) {
+            $query->where('driver_id', $selectedDriverId);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->get();
+
+        // Group summary per driver
+        $driverSummaries = Order::select(
+                'driver_id',
+                DB::raw('COUNT(*) as total_orders'),
+                DB::raw('SUM(total_amount) as total_collected'),
+                DB::raw('SUM(delivery_fee) as total_delivery_fees')
+            )
+            ->whereNotNull('driver_id')
+            ->whereDate('created_at', $date)
+            ->groupBy('driver_id')
+            ->with('driver')
+            ->get();
+
+        return view('admin.drivers.settlement', compact('date', 'selectedDriverId', 'drivers', 'orders', 'driverSummaries'));
     }
 }

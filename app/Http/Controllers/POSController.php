@@ -188,6 +188,7 @@ class POSController extends Controller
                 'discount_amount' => 'nullable|numeric|min:0',
                 'delivery_fee' => 'nullable|numeric|min:0',
                 'delivery_address' => 'nullable|string',
+                'driver_id' => 'nullable|exists:drivers,id',
                 'driver_name' => 'nullable|string',
                 'customer_id' => 'nullable|exists:customers,id',
                 'cart' => 'required|array|min:1',
@@ -208,7 +209,14 @@ class POSController extends Controller
         $discountAmount = floatval($validated['discount_amount'] ?? 0.00);
         $deliveryFee = floatval($validated['delivery_fee'] ?? 0.00);
         $deliveryAddress = $validated['delivery_address'] ?? null;
+        $driverId = $validated['driver_id'] ?? null;
         $driverName = $validated['driver_name'] ?? null;
+
+        if ($driverId && !$driverName) {
+            $dObj = \App\Models\Driver::find($driverId);
+            if ($dObj) $driverName = $dObj->name;
+        }
+
         $customerId = $validated['customer_id'] ?? null;
         $cashier = auth()->user();
 
@@ -223,7 +231,7 @@ class POSController extends Controller
         }
 
         try {
-            $orderId = DB::transaction(function () use ($cart, $paymentMethod, $discountAmount, $deliveryFee, $deliveryAddress, $driverName, $customerId, $cashier) {
+            $orderId = DB::transaction(function () use ($cart, $paymentMethod, $discountAmount, $deliveryFee, $deliveryAddress, $driverId, $driverName, $customerId, $cashier) {
                 $totalAmount = 0.00;
                 $itemsToCreate = [];
                 $stockUpdates = [];
@@ -287,6 +295,7 @@ class POSController extends Controller
                     'discount_amount' => $discountAmount,
                     'delivery_fee' => $deliveryFee,
                     'delivery_address' => $deliveryAddress,
+                    'driver_id' => $driverId,
                     'driver_name' => $driverName,
                     'cashier_name' => $cashier->name
                 ]);

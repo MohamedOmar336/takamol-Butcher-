@@ -15,6 +15,7 @@ class Order extends Model
         'discount_amount',
         'delivery_fee',
         'delivery_address',
+        'driver_id',
         'driver_name',
         'cashier_name',
         'status'
@@ -23,8 +24,14 @@ class Order extends Model
     protected $casts = [
         'total_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
+        'delivery_fee' => 'decimal:2',
         'created_at' => 'datetime'
     ];
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
+    }
 
     public function customer()
     {

@@ -40,6 +40,8 @@
             font-size: 12pt;
             font-weight: bold;
             margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .subtitle {

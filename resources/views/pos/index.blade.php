@@ -31,15 +31,18 @@
     <!-- Left Column: Search, Categories, Products Grid -->
     <div class="pos-main">
         <!-- Scanners and search bars -->
-        <div class="pos-scan-bar">
-            <div class="form-group" style="margin-bottom: 0; position: relative;">
+        <div class="pos-scan-bar" style="display: flex; gap: 10px; align-items: center;">
+            <div class="form-group" style="margin-bottom: 0; position: relative; flex: 1;">
                 <input type="text" id="usbScannerInput" class="form-control" placeholder="{{ (isset($activeTenant) && in_array($activeTenant->store_type, ['butcher', 'supermarket'])) ? __('messages.scan_scale_code') : (app()->getLocale() === 'ar' ? 'امسح الباركود (أو اكتبه هنا)...' : 'Scan barcode (or type here)...') }}" autocomplete="off" autofocus>
                 <span style="position: absolute; left: 15px; top: 12px; font-size: 1.1rem; pointer-events: none;">🏷️</span>
             </div>
-            <div class="form-group" style="margin-bottom: 0; position: relative;">
+            <div class="form-group" style="margin-bottom: 0; position: relative; flex: 1;">
                 <input type="text" id="productSearchInput" class="form-control" placeholder="{{ __('messages.search_product') }}" autocomplete="off">
                 <span style="position: absolute; left: 15px; top: 12px; font-size: 1.1rem; pointer-events: none;">🔍</span>
             </div>
+            <button type="button" id="btnOpenCashDrawer" class="btn btn-secondary" style="padding: 10px 14px; font-weight: 700; white-space: nowrap; border-color: var(--warning-color); color: var(--warning-color);" title="{{ app()->getLocale() === 'ar' ? 'فتح درج الكاشير' : 'Open Cash Drawer' }}">
+                🔓 {{ app()->getLocale() === 'ar' ? 'فتح الدرج' : 'Open Drawer' }}
+            </button>
         </div>
 
         <!-- Categories horizontal tabs -->
@@ -159,7 +162,7 @@
                 <select id="driverNameInput" class="form-control" style="font-size: 0.8rem; padding: 6px 8px;">
                     <option value="">{{ app()->getLocale() === 'ar' ? '-- اختر الطيار --' : '-- Select Driver --' }}</option>
                     @foreach($drivers as $driver)
-                        <option value="{{ $driver->name }}">{{ $driver->name }}</option>
+                        <option value="{{ $driver->name }}" data-driver-id="{{ $driver->id }}">{{ $driver->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -523,13 +526,8 @@
                     return;
                 }
 
-                // Weighed items require entering the weight
-                currentSelectedProduct = product;
-                weightModalProductName.innerText = product.name;
-                weightModalProductPrice.innerText = product.price.toFixed(2);
-                manualWeightInput.value = '';
-                weightInputModal.classList.add('active');
-                setTimeout(() => manualWeightInput.focus(), 150);
+                // Direct cart addition with 1.000 kg default weight (cashier can edit weight directly in the cart row)
+                addToCart(product, 1.000);
             } else {
                 // Piece items add +1
                 addToCart(product, 1.000);
@@ -836,6 +834,27 @@
         });
     });
 
+    // Cash Drawer Kickout Pulse
+    function kickoutCashDrawer() {
+        try {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'data:text/plain;charset=utf-8,\x1B\x70\x00\x19\xfa';
+            document.body.appendChild(iframe);
+            setTimeout(() => iframe.remove(), 1000);
+        } catch (e) {
+            console.error('Drawer kick error:', e);
+        }
+    }
+
+    const btnOpenCashDrawer = document.getElementById('btnOpenCashDrawer');
+    if (btnOpenCashDrawer) {
+        btnOpenCashDrawer.addEventListener('click', () => {
+            kickoutCashDrawer();
+            alert("{{ app()->getLocale() === 'ar' ? 'تم إرسال أمر فتح درج الكاش 🔓' : 'Cash drawer open signal sent 🔓' }}");
+        });
+    }
+
     // 8. CHECKOUT ORDER LOGIC
     btnCheckout.addEventListener('click', () => {
         if (cart.length === 0) {
@@ -845,11 +864,15 @@
             return;
         }
 
+        const selectedDriverOption = driverNameInput.options[driverNameInput.selectedIndex];
+        const driverId = selectedDriverOption ? selectedDriverOption.getAttribute('data-driver-id') : null;
+
         const payload = {
             payment_method: activePaymentMethod,
             discount_amount: parseFloat(discountInput.value) || 0.00,
             delivery_fee: parseFloat(deliveryInput.value) || 0.00,
             delivery_address: deliveryAddressInput.value || null,
+            driver_id: driverId || null,
             driver_name: driverNameInput.value || null,
             customer_id: linkedCustomer ? linkedCustomer.id : null,
             cart: cart.map(item => ({
@@ -872,6 +895,9 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
+                // Kickout Cash Drawer
+                kickoutCashDrawer();
+
                 // Open Receipt Print window
                 const printUrl = `{{ url('/pos/receipt') }}/${data.order_id}`;
                 const printWindow = window.open(printUrl, '_blank', 'width=600,height=800');

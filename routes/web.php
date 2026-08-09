@@ -80,8 +80,9 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/users/{user}', [DashboardController::class, 'usersUpdate'])->name('admin.users.update');
             Route::delete('/users/{user}', [DashboardController::class, 'usersDestroy'])->name('admin.users.destroy');
 
-            // Drivers CRUD
+            // Drivers CRUD & End-of-Day Settlement
             Route::get('/drivers', [DriverController::class, 'index'])->name('admin.drivers.index');
+            Route::get('/drivers/settlement', [DriverController::class, 'settlementReport'])->name('admin.drivers.settlement');
             Route::post('/drivers', [DriverController::class, 'store'])->name('admin.drivers.store');
             Route::put('/drivers/{driver}', [DriverController::class, 'update'])->name('admin.drivers.update');
             Route::delete('/drivers/{driver}', [DriverController::class, 'destroy'])->name('admin.drivers.destroy');
