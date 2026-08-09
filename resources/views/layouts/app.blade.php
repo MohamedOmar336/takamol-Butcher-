@@ -135,6 +135,13 @@
                 </div>
 
                 <div class="header-actions">
+                    <!-- Real-Time Ping & Network Indicator Badge -->
+                    <div id="pingIndicator" class="ping-badge" title="{{ app()->getLocale() === 'ar' ? 'حالة الاتصال والبنج للشبكة' : 'Network Connection & Ping Status' }}" style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 50px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); font-size: 0.82rem; font-weight: 700; user-select: none;">
+                        <span id="pingLed" class="ping-led online" style="width: 10px; height: 10px; border-radius: 50%; background-color: #10b981; box-shadow: 0 0 8px #10b981; display: inline-block; transition: all 0.3s ease;"></span>
+                        <span id="pingText" style="color: var(--text-primary);">{{ app()->getLocale() === 'ar' ? 'جاري الفحص...' : 'Checking...' }}</span>
+                        <span id="pingMs" style="font-size: 0.75rem; color: var(--text-secondary); font-family: monospace;">-- ms</span>
+                    </div>
+
                     <!-- Language Toggle -->
                     @if(app()->getLocale() === 'ar')
                         <a href="{{ route('change_language', 'en') }}" class="btn-round" title="Switch to English">EN</a>
@@ -258,6 +265,50 @@
                 }
             });
         }
+
+        // Real-Time Ping & Network Status Checker
+        function checkPing() {
+            const pingLed = document.getElementById('pingLed');
+            const pingText = document.getElementById('pingText');
+            const pingMs = document.getElementById('pingMs');
+            if (!pingLed || !pingText || !pingMs) return;
+
+            if (!navigator.onLine) {
+                pingLed.style.backgroundColor = '#ef4444';
+                pingLed.style.boxShadow = '0 0 8px #ef4444';
+                pingText.innerText = "{{ app()->getLocale() === 'ar' ? 'غير متصل' : 'Offline' }}";
+                pingMs.innerText = '-- ms';
+                return;
+            }
+
+            const startTime = performance.now();
+            fetch("{{ route('change_language', app()->getLocale()) }}", { method: 'HEAD', cache: 'no-store' })
+                .then(() => {
+                    const latency = Math.round(performance.now() - startTime);
+                    pingMs.innerText = `${latency} ms`;
+
+                    if (latency < 200) {
+                        pingLed.style.backgroundColor = '#10b981';
+                        pingLed.style.boxShadow = '0 0 8px #10b981';
+                        pingText.innerText = "{{ app()->getLocale() === 'ar' ? 'متصل' : 'Online' }}";
+                    } else {
+                        pingLed.style.backgroundColor = '#f59e0b';
+                        pingLed.style.boxShadow = '0 0 8px #f59e0b';
+                        pingText.innerText = "{{ app()->getLocale() === 'ar' ? 'بطيء' : 'Slow' }}";
+                    }
+                })
+                .catch(() => {
+                    pingLed.style.backgroundColor = '#ef4444';
+                    pingLed.style.boxShadow = '0 0 8px #ef4444';
+                    pingText.innerText = "{{ app()->getLocale() === 'ar' ? 'غير متصل' : 'Offline' }}";
+                    pingMs.innerText = '-- ms';
+                });
+        }
+
+        window.addEventListener('online', checkPing);
+        window.addEventListener('offline', checkPing);
+        checkPing();
+        setInterval(checkPing, 8000);
     </script>
     @yield('scripts')
 </body>
