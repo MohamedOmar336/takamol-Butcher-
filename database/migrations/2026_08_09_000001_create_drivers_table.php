@@ -3,9 +3,26 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    private function hasColumn($table, $column): bool
+    {
+        try {
+            $columns = DB::select("PRAGMA table_info({$table})");
+            foreach ($columns as $col) {
+                $colArray = (array) $col;
+                if (isset($colArray['name']) && strtolower($colArray['name']) === strtolower($column)) {
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            // fallback
+        }
+        return false;
+    }
+
     public function up(): void
     {
         if (!Schema::hasTable('drivers')) {
@@ -19,13 +36,13 @@ return new class extends Migration
             });
         } else {
             Schema::table('drivers', function (Blueprint $table) {
-                if (!Schema::hasColumn('drivers', 'phone')) {
+                if (!$this->hasColumn('drivers', 'phone')) {
                     $table->string('phone')->nullable()->after('name');
                 }
-                if (!Schema::hasColumn('drivers', 'vehicle_type')) {
+                if (!$this->hasColumn('drivers', 'vehicle_type')) {
                     $table->string('vehicle_type')->nullable()->after('phone');
                 }
-                if (!Schema::hasColumn('drivers', 'is_active')) {
+                if (!$this->hasColumn('drivers', 'is_active')) {
                     $table->boolean('is_active')->default(true)->after('vehicle_type');
                 }
             });
