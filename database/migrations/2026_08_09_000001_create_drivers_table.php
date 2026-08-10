@@ -17,6 +17,18 @@ return new class extends Migration
                 $table->boolean('is_active')->default(true);
                 $table->timestamps();
             });
+        } else {
+            Schema::table('drivers', function (Blueprint $table) {
+                if (!Schema::hasColumn('drivers', 'phone')) {
+                    $table->string('phone')->nullable()->after('name');
+                }
+                if (!Schema::hasColumn('drivers', 'vehicle_type')) {
+                    $table->string('vehicle_type')->nullable()->after('phone');
+                }
+                if (!Schema::hasColumn('drivers', 'is_active')) {
+                    $table->boolean('is_active')->default(true)->after('vehicle_type');
+                }
+            });
         }
     }
 

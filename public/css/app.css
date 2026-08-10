@@ -688,20 +688,20 @@ html[dir="rtl"] .product-card-stock {
 }
 
 .cart-items {
-    flex-grow: 1;
-    min-height: 200px;
+    flex: 1 1 auto;
+    min-height: 100px;
     overflow-y: auto;
-    padding: 16px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .cart-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 10px 14px;
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--card-radius);
@@ -713,17 +713,17 @@ html[dir="rtl"] .product-card-stock {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .cart-item-name {
     font-weight: 800;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     color: var(--text-primary);
 }
 
 .cart-item-price {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-secondary);
 }
@@ -731,10 +731,10 @@ html[dir="rtl"] .product-card-stock {
 .cart-item-qty-control {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 4px 8px;
+    padding: 2px 6px;
     background-color: var(--bg-secondary);
 }
 
@@ -743,9 +743,9 @@ html[dir="rtl"] .product-card-stock {
     background: none;
     font-weight: 800;
     cursor: pointer;
-    font-size: 1.25rem;
-    width: 32px;
-    height: 32px;
+    font-size: 1.2rem;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -759,22 +759,22 @@ html[dir="rtl"] .product-card-stock {
 }
 
 .cart-item-qty-input {
-    width: 65px;
+    width: 60px;
     text-align: center;
     border: none;
     background: none;
     color: var(--text-primary);
     font-weight: 800;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
 }
 
 .cart-item-subtotal {
     font-weight: 800;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     color: var(--accent-color);
     white-space: nowrap;
     text-align: end;
-    min-width: 95px;
+    min-width: 90px;
 }
 
 .cart-item-remove {
@@ -814,14 +814,15 @@ html[dir="rtl"] .product-card-stock {
 
 /* POS customer widget */
 .cart-customer-section {
-    padding: 12px 15px;
+    padding: 10px 14px;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     background-color: var(--bg-tertiary);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     position: relative;
+    flex-shrink: 0;
 }
 
 .customer-search-results {
@@ -874,33 +875,37 @@ html[dir="rtl"] .product-card-stock {
 
 /* POS pricing footer */
 .cart-pricing-section {
-    padding: 20px;
+    padding: 14px 18px;
     background-color: var(--bg-secondary);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
+    overflow-y: auto;
+    max-height: 60vh;
+    flex-shrink: 0;
 }
 
 .pricing-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: var(--text-secondary);
 }
 
 .pricing-row.total {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--text-primary);
     border-top: 1px solid var(--border-color);
-    padding-top: 12px;
+    padding-top: 8px;
+    margin-top: 4px;
 }
 
 .payment-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 10px;
+    gap: 6px;
+    margin-top: 4px;
 }
 
 .payment-btn {
@@ -908,13 +913,13 @@ html[dir="rtl"] .product-card-stock {
     background-color: var(--bg-tertiary);
     color: var(--text-secondary);
     border-radius: var(--btn-radius);
-    padding: 10px 4px;
-    font-size: 0.78rem;
+    padding: 8px 4px;
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     transition: all 0.2s ease;
 }
@@ -934,15 +939,15 @@ html[dir="rtl"] .product-card-stock {
 .checkout-btn {
     width: 100%;
     padding: 14px;
-    font-weight: 700;
-    font-size: 1.05rem;
+    font-weight: 800;
+    font-size: 1.2rem;
     background-color: var(--success-color);
     color: #ffffff;
     border: none;
     border-radius: var(--btn-radius);
     cursor: pointer;
     box-shadow: var(--shadow-md);
-    margin-top: 10px;
+    margin-top: 8px;
     transition: all 0.2s ease;
 }
 

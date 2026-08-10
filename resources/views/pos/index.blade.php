@@ -895,12 +895,20 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Kickout Cash Drawer
-                kickoutCashDrawer();
-
-                // Open Receipt Print window
+                // Trigger direct print via background iframe (No popup window interruptions)
                 const printUrl = `{{ url('/pos/receipt') }}/${data.order_id}`;
-                const printWindow = window.open(printUrl, '_blank', 'width=600,height=800');
+                let printFrame = document.getElementById('posPrintIframe');
+                if (!printFrame) {
+                    printFrame = document.createElement('iframe');
+                    printFrame.id = 'posPrintIframe';
+                    printFrame.style.position = 'fixed';
+                    printFrame.style.opacity = '0';
+                    printFrame.style.width = '0';
+                    printFrame.style.height = '0';
+                    printFrame.style.border = 'none';
+                    document.body.appendChild(printFrame);
+                }
+                printFrame.src = printUrl;
                 
                 // Reset Cart state
                 cart = [];

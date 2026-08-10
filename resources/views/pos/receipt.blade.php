@@ -307,14 +307,10 @@
         <p style="margin-top: 5px; font-size: 7.5pt; color: #555;">{{ $activeTenant->name ?? 'Dukkan' }} POS</p>
     </div>
 
-    <!-- Trigger print dialog automatically -->
+    <!-- Trigger print automatically -->
     <script>
         window.addEventListener('load', () => {
             window.print();
-            // Automatically close window after print dialog is closed/completed
-            setTimeout(() => {
-                window.close();
-            }, 1000);
         });
     </script>
 </body>

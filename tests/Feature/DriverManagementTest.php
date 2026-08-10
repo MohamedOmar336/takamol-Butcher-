@@ -79,12 +79,12 @@ class DriverManagementTest extends TestCase
         $baseUrl = "http://{$slug}.localhost";
 
         // Store Driver
-        $response = $this->post("{$baseUrl}/admin/drivers", [
+        $response = $this->from("{$baseUrl}/admin/drivers")->post("{$baseUrl}/admin/drivers", [
             'name' => 'Driver Ahmed',
             'phone' => '01234567890',
             'is_active' => '1',
         ]);
-        $response->assertRedirect(route('admin.drivers.index'));
+        $response->assertRedirect("{$baseUrl}/admin/drivers");
 
         // Point to tenant DB to assert
         config(['database.connections.sqlite.database' => $dbPath]);
@@ -105,12 +105,12 @@ class DriverManagementTest extends TestCase
         DB::reconnect('sqlite');
 
         // Update Driver
-        $response = $this->put("{$baseUrl}/admin/drivers/{$driver->id}", [
+        $response = $this->from("{$baseUrl}/admin/drivers")->put("{$baseUrl}/admin/drivers/{$driver->id}", [
             'name' => 'Driver Ahmed Updated',
             'phone' => '09876543210',
             'is_active' => '1',
         ]);
-        $response->assertRedirect(route('admin.drivers.index'));
+        $response->assertRedirect("{$baseUrl}/admin/drivers");
 
         // Point to tenant DB to assert and seed orders
         config(['database.connections.sqlite.database' => $dbPath]);
@@ -129,6 +129,7 @@ class DriverManagementTest extends TestCase
         Order::create([
             'order_number' => 'DKN-TEST-1',
             'user_id' => $admin->id,
+            'driver_id' => $driver->id,
             'payment_method' => 'cash',
             'total_amount' => 150.00,
             'delivery_fee' => 20.00,
@@ -141,6 +142,7 @@ class DriverManagementTest extends TestCase
         Order::create([
             'order_number' => 'DKN-TEST-2',
             'user_id' => $admin->id,
+            'driver_id' => $driver->id,
             'payment_method' => 'cash',
             'total_amount' => 180.00,
             'delivery_fee' => 15.00,
@@ -176,8 +178,8 @@ class DriverManagementTest extends TestCase
         DB::reconnect('sqlite');
 
         // Delete Driver
-        $response = $this->delete("{$baseUrl}/admin/drivers/{$driver->id}");
-        $response->assertRedirect(route('admin.drivers.index'));
+        $response = $this->from("{$baseUrl}/admin/drivers")->delete("{$baseUrl}/admin/drivers/{$driver->id}");
+        $response->assertRedirect("{$baseUrl}/admin/drivers");
 
         // Point to tenant DB to assert deletion
         config(['database.connections.sqlite.database' => $dbPath]);
