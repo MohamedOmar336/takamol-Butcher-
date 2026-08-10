@@ -35,17 +35,15 @@ return new class extends Migration
                 $table->timestamps();
             });
         } else {
-            Schema::table('drivers', function (Blueprint $table) {
-                if (!$this->hasColumn('drivers', 'phone')) {
-                    $table->string('phone')->nullable()->after('name');
-                }
-                if (!$this->hasColumn('drivers', 'vehicle_type')) {
-                    $table->string('vehicle_type')->nullable()->after('phone');
-                }
-                if (!$this->hasColumn('drivers', 'is_active')) {
-                    $table->boolean('is_active')->default(true)->after('vehicle_type');
-                }
-            });
+            if (!$this->hasColumn('drivers', 'phone')) {
+                DB::statement('ALTER TABLE drivers ADD COLUMN phone VARCHAR(255) NULL');
+            }
+            if (!$this->hasColumn('drivers', 'vehicle_type')) {
+                DB::statement('ALTER TABLE drivers ADD COLUMN vehicle_type VARCHAR(255) NULL');
+            }
+            if (!$this->hasColumn('drivers', 'is_active')) {
+                DB::statement('ALTER TABLE drivers ADD COLUMN is_active TINYINT(1) DEFAULT 1');
+            }
         }
     }
 
