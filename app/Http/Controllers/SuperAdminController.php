@@ -41,15 +41,14 @@ class SuperAdminController extends Controller
 
         $host = $request->getHost();
         $scheme = $request->getScheme();
-        $port = $request->getPort();
 
         // Detect if we are on localhost or custom domain
         $centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost';
 
         if ($host === 'localhost' || $host === '127.0.0.1') {
-            $redirectUrl = "{$scheme}://{$slug}.localhost" . ($port ? ":{$port}" : "") . "/login";
+            $redirectUrl = "{$scheme}://{$slug}.localhost/login";
         } else {
-            $redirectUrl = "{$scheme}://{$slug}.{$centralDomain}" . ($port ? ":{$port}" : "") . "/login";
+            $redirectUrl = "{$scheme}://{$slug}.{$centralDomain}/login";
         }
 
         return redirect($redirectUrl);
