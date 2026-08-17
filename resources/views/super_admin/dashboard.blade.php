@@ -70,12 +70,10 @@
                                     <td style="padding: 15px 10px; font-family: monospace; text-align: start;">
                                         @php
                                             $centralDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'localhost';
-                                            $port = request()->getPort();
-                                            $portStr = ($port && $port != 80 && $port != 443) ? ":{$port}" : "";
-                                            $url = "http://{$tenant->slug}.{$centralDomain}{$portStr}/login";
+                                            $url = "http://{$tenant->slug}.{$centralDomain}/login";
                                         @endphp
                                         <a href="{{ $url }}" target="_blank" style="color: var(--accent-color); text-decoration: underline; font-weight: 600;">
-                                            {{ $tenant->slug }}.{{ $centralDomain }}{{ $portStr }}
+                                            {{ $tenant->slug }}.{{ $centralDomain }}
                                         </a>
                                     </td>
                                     <!-- Store Type Badge -->
@@ -162,7 +160,7 @@
                                         @php
                                             $bypassTimestamp = time();
                                             $bypassSignature = hash_hmac('sha256', $tenant->slug . '|' . $bypassTimestamp, config('app.key'));
-                                            $bypassUrl = "http://{$tenant->slug}.{$centralDomain}{$portStr}/login/bypass?timestamp={$bypassTimestamp}&signature={$bypassSignature}";
+                                            $bypassUrl = "http://{$tenant->slug}.{$centralDomain}/login/bypass?timestamp={$bypassTimestamp}&signature={$bypassSignature}";
                                         @endphp
                                         <a href="{{ $bypassUrl }}" target="_blank" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem; background-color: #0f172a; border-color: #0f172a; color: white; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; border-radius: 6px;">
                                             🔑 {{ app()->getLocale() === 'ar' ? 'دخول للمتجر' : 'Login to Store' }}
