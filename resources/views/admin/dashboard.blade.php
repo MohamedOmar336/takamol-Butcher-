@@ -4,6 +4,13 @@
 @section('header_title', __('messages.admin_panel') . ' - ' . __('messages.dashboard'))
 
 @section('content')
+<!-- Action Bar -->
+<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px;">
+    <a href="{{ route('admin.reports.weighed_products') }}" class="btn btn-secondary" style="font-weight: 700; border-color: var(--accent-color); color: var(--accent-color);">
+        ⚖️ {{ app()->getLocale() === 'ar' ? 'تقرير مبيعات الأصناف الموزونة بالكيلو' : 'Weighed Products & Kilos Sales Report' }}
+    </a>
+</div>
+
 <!-- Core Stats Cards Row -->
 <div class="stats-grid">
     <!-- Stat 1: Total Sales Today -->

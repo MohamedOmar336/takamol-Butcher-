@@ -59,6 +59,12 @@
                             <span class="nav-text">{{ __('messages.orders_list') }}</span>
                         </a>
                     </li>
+                    <li class="nav-item {{ Route::is('admin.reports.weighed_products') ? 'active' : '' }}">
+                        <a href="{{ route('admin.reports.weighed_products') }}">
+                            <span class="nav-icon">⚖️</span>
+                            <span class="nav-text">{{ app()->getLocale() === 'ar' ? 'مبيعات الأوزان' : 'Weight Sales' }}</span>
+                        </a>
+                    </li>
                 @endif
 
                 @if(auth()->user()->is_admin || auth()->user()->hasPermission('manage_inventory'))

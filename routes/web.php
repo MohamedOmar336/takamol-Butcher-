@@ -67,6 +67,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
             Route::get('/orders', [DashboardController::class, 'ordersIndex'])->name('admin.orders.index');
             Route::post('/orders/{order}/refund', [DashboardController::class, 'refundOrder'])->name('admin.orders.refund');
+            Route::get('/reports/weighed-products', [DashboardController::class, 'weighedProductsReport'])->name('admin.reports.weighed_products');
             Route::get('/print-report', [DashboardController::class, 'printDailyReport'])->name('admin.print_report');
             Route::post('/send-range-report', [DashboardController::class, 'sendRangeReportManual'])->name('admin.send_range_report');
             Route::get('/print-range-report', [DashboardController::class, 'printRangeReport'])->name('admin.print_range_report');

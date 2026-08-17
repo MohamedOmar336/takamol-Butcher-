@@ -413,4 +413,58 @@ class DashboardController extends Controller
             'topProducts'
         ));
     }
+
+    public function weighedProductsReport(Request $request)
+    {
+        // Default to Last Month if no filter date is passed
+        $defaultStart = Carbon::now('Africa/Cairo')->subMonth()->startOfMonth()->format('Y-m-d');
+        $defaultEnd = Carbon::now('Africa/Cairo')->subMonth()->endOfMonth()->format('Y-m-d');
+
+        $startDate = $request->input('start_date', $defaultStart);
+        $endDate = $request->input('end_date', $defaultEnd);
+
+        $start = Carbon::parse($startDate, 'Africa/Cairo')->startOfDay();
+        $end = Carbon::parse($endDate, 'Africa/Cairo')->endOfDay();
+
+        // Query weighed sales items grouped by product
+        $weighedSales = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('products.pricing_type', 'weight')
+            ->where('orders.status', 'completed')
+            ->whereBetween('orders.created_at', [$start, $end])
+            ->select(
+                'products.id',
+                'products.sku',
+                'products.name_ar',
+                'products.name_en',
+                'products.price as unit_price',
+                DB::raw('SUM(order_items.quantity) as total_weight_kg'),
+                DB::raw('SUM(order_items.subtotal) as total_revenue'),
+                DB::raw('COUNT(DISTINCT orders.id) as orders_count')
+            )
+            ->groupBy('products.id', 'products.sku', 'products.name_ar', 'products.name_en', 'products.price')
+            ->orderByDesc('total_weight_kg')
+            ->get();
+
+        $totalKgSold = $weighedSales->sum('total_weight_kg');
+        $totalRevenue = $weighedSales->sum('total_revenue');
+        $totalWeighedOrders = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('products.pricing_type', 'weight')
+            ->where('orders.status', 'completed')
+            ->whereBetween('orders.created_at', [$start, $end])
+            ->distinct('orders.id')
+            ->count('orders.id');
+
+        return view('admin.reports.weighed_products', compact(
+            'startDate',
+            'endDate',
+            'weighedSales',
+            'totalKgSold',
+            'totalRevenue',
+            'totalWeighedOrders'
+        ));
+    }
 }
